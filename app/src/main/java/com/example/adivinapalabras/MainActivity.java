@@ -100,8 +100,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (!acertado) {//solo se ejecutara si no se ha acertado letra
-                calcularIntentos(--intentos);
-                Toast.makeText(this, "Has fallado", Toast.LENGTH_LONG).show();
+                if(intentos!=0){
+                    calcularIntentos(--intentos);//resta un intento
+                    Toast.makeText(this, "Has fallado", Toast.LENGTH_LONG).show();
+                }
             }
 
             //se muestra la palabra en su estado actual tras elegir letra
