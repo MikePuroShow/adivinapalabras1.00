@@ -1,7 +1,9 @@
 package com.example.adivinapalabras;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -81,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton adivinar
      */
     public void resolver(View vista) {
-        if(letraElegida.getText().toString().equals("")){//si no se ha elegido ninguna letra
+        if (letraElegida.getText().toString().equals("")) {//si no se ha elegido ninguna letra
             Toast.makeText(this, "No has introducido ninguna letra", Toast.LENGTH_LONG).show();
-        }else{
+        } else {
             //lectura de la letra
             String letraCadena = letraElegida.getText().toString();//la letra en el edit text, formato cadena
             char letra = letraCadena.charAt(0);//la letra elegida en formato char
@@ -115,14 +117,33 @@ public class MainActivity extends AppCompatActivity {
      */
     public void comprobarPartida() {
         if (intentos == 0) {
-            Toast.makeText(this, "Has perdido", Toast.LENGTH_LONG).show();//todo cambiar a alertdialog
+            mostrarDialogo("Has perdido");
         } else {
             boolean[] comprobacionGanado = new boolean[posicionesAcertadas.length];
             Arrays.fill(comprobacionGanado, true);
             if (Arrays.equals(comprobacionGanado, posicionesAcertadas)) {
-                Toast.makeText(this, "Has ganado", Toast.LENGTH_LONG).show();//todo cambiar a alertdialog
+                mostrarDialogo("Has ganado");
             }
         }
+    }
+
+    /**
+     * Metodo que muestra el alertdialog al ganar o perder la partida y permite jugar otra
+     *
+     * @param estadoPartida mensaje si se ha ganado o no
+     */
+    public void mostrarDialogo(String estadoPartida) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(estadoPartida);
+        builder.setMessage(estadoPartida + ", acepta para jugar otra partida");
+        builder.setPositiveButton("Jugar otra partida", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                otraPartida(null);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     /**
