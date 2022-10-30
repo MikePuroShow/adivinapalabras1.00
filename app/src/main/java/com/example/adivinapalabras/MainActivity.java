@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             //lectura de la letra
             String letraCadena = letraElegida.getText().toString();//la letra en el edit text, formato cadena
             char letra = letraCadena.charAt(0);//la letra elegida en formato char
+            letraElegida.setText("");//se ayuda al usuario a que no tenga que borrar la letra para escribir otra
 
             //comprobacion de acierto o fallo
             boolean acertado = false;//se da por hecho que no va a acertar la letra
