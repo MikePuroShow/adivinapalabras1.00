@@ -81,29 +81,32 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton adivinar
      */
     public void resolver(View vista) {
-        //lectura de la letra
-        String letraCadena = letraElegida.getText().toString();//la letra en el edit text, formato cadena
-        char letra = letraCadena.charAt(0);//la letra elegida en formato char
+        if(letraElegida.getText().toString().equals("")){//si no se ha elegido ninguna letra
+            Toast.makeText(this, "No has introducido ninguna letra", Toast.LENGTH_LONG).show();
+        }else{
+            //lectura de la letra
+            String letraCadena = letraElegida.getText().toString();//la letra en el edit text, formato cadena
+            char letra = letraCadena.charAt(0);//la letra elegida en formato char
 
-        //comprobacion de acierto o fallo
-        boolean acertado = false;//se da por hecho que no va a acertar la letra
-        for (int i = 0; i < palabraActual.length; i++) {
-            if (letra == palabraActual[i]) {
-                posicionesAcertadas[i] = true;//se pone la posicion correspondiente a true
-                acertado = true;//se indica que se ha acertado la letra
+            //comprobacion de acierto o fallo
+            boolean acertado = false;//se da por hecho que no va a acertar la letra
+            for (int i = 0; i < palabraActual.length; i++) {
+                if (letra == palabraActual[i]) {
+                    posicionesAcertadas[i] = true;//se pone la posicion correspondiente a true
+                    acertado = true;//se indica que se ha acertado la letra
+                }
             }
+            if (!acertado) {//solo se ejecutara si no se ha acertado letra
+                calcularIntentos(--intentos);
+                Toast.makeText(this, "Has fallado", Toast.LENGTH_LONG).show();
+            }
+
+            //se muestra la palabra en su estado actual tras elegir letra
+            mostrarPalabra();
+
+            //se comprueba si se ha ganado o se ha perdido la partida
+            comprobarPartida();
         }
-        if (!acertado) {//solo se ejecutara si no se ha acertado letra
-            calcularIntentos(--intentos);
-        }
-
-        //se muestra la palabra en su estado actual tras elegir letra
-        mostrarPalabra();
-
-        //se comprueba si se ha ganado o se ha perdido la partida
-        comprobarPartida();
-
-
     }
 
     /**
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton que ejecuta el evento
      */
     public void otraPartida(View vista) {
-
+        elegirPalabra();
     }
 
 }

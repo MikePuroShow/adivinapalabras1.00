@@ -152,12 +152,13 @@
 
         android:layout_marginBottom="39dp"
 
+        android:onClick="otraPartida"
+
         android:text="NUEVO"
 
         android:textColorLink="@color/black"
 
         app:layout_constraintBottom_toTopOf="@+id/palabra"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
