@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false
-        calcularIntentos(5);//se inician los intentos
+        calcularIntentos(intentos = 5);//se inician los intentos
         mostrarPalabra();//se muestra la palabra seleccionada
 
     }
@@ -104,23 +104,39 @@ public class MainActivity extends AppCompatActivity {
         comprobarPartida();
 
 
-
     }
 
-    public void comprobarPartida(){
-        if (intentos==0){
-            Toast.makeText(this,"Has perdido", Toast.LENGTH_LONG).show();//todo cambiar a alertdialog
-        }else{
+    /**
+     * Metodo para comprobar si se ha ganado o si se ha perdido la partida
+     */
+    public void comprobarPartida() {
+        if (intentos == 0) {
+            Toast.makeText(this, "Has perdido", Toast.LENGTH_LONG).show();//todo cambiar a alertdialog
+        } else {
             boolean[] comprobacionGanado = new boolean[posicionesAcertadas.length];
-            Arrays.fill(comprobacionGanado,true);
-            if (Arrays.equals(comprobacionGanado,posicionesAcertadas)){
-                Toast.makeText(this,"Has ganado",Toast.LENGTH_LONG).show();
+            Arrays.fill(comprobacionGanado, true);
+            if (Arrays.equals(comprobacionGanado, posicionesAcertadas)) {
+                Toast.makeText(this, "Has ganado", Toast.LENGTH_LONG).show();//todo cambiar a alertdialog
             }
         }
     }
 
-    public void calcularIntentos(int intentos){
-        intentosRestantes.setText(String.valueOf(intentos));
+    /**
+     * Metodo para actualizar el textview de los intentosActualizados a los actuales
+     *
+     * @param intentosActualizados intentosActualizados a mostrar
+     */
+    public void calcularIntentos(int intentosActualizados) {
+        intentosRestantes.setText(String.valueOf(intentosActualizados));
+    }
+
+    /**
+     * Metodo para jugar otra partida con una palabra aleatoria
+     *
+     * @param vista boton que ejecuta el evento
+     */
+    public void otraPartida(View vista) {
+
     }
 
 }
