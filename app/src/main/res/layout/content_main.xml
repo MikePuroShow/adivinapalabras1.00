@@ -94,8 +94,6 @@
 
         android:layout_marginEnd="21dp"
 
-        android:onClick="resolver"
-
         android:text="ADIVINAR"
 
         app:layout_constraintEnd_toEndOf="parent"
@@ -152,8 +150,6 @@
         android:layout_marginTop="8dp"
 
         android:layout_marginBottom="39dp"
-
-        android:onClick="otraPartida"
 
         android:text="NUEVO"
 
