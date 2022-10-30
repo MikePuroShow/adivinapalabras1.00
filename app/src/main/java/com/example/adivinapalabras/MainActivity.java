@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false
-        intentos = 5;//intentos para la partida
-        intentosRestantes.setText(String.valueOf(intentos));//se muestran los intentos
+        calcularIntentos(5);//se inician los intentos
         mostrarPalabra();//se muestra la palabra seleccionada
 
     }
@@ -93,19 +93,34 @@ public class MainActivity extends AppCompatActivity {
                 acertado = true;//se indica que se ha acertado la letra
             }
         }
-        if (!acertado) {//solo se ejecutara si no se ha acertado letra todo modularizar
-            intentos--;
-            intentosRestantes.setText(String.valueOf(intentos));
+        if (!acertado) {//solo se ejecutara si no se ha acertado letra
+            calcularIntentos(--intentos);
         }
 
         //se muestra la palabra en su estado actual tras elegir letra
         mostrarPalabra();
 
-        //comprobar si se ha perdido
+        //se comprueba si se ha ganado o se ha perdido la partida
+        comprobarPartida();
 
-        //comprobar si se ha ganado
 
 
+    }
+
+    public void comprobarPartida(){
+        if (intentos==0){
+            Toast.makeText(this,"Has perdido", Toast.LENGTH_LONG).show();//todo cambiar a alertdialog
+        }else{
+            boolean[] comprobacionGanado = new boolean[posicionesAcertadas.length];
+            Arrays.fill(comprobacionGanado,true);
+            if (Arrays.equals(comprobacionGanado,posicionesAcertadas)){
+                Toast.makeText(this,"Has ganado",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void calcularIntentos(int intentos){
+        intentosRestantes.setText(String.valueOf(intentos));
     }
 
 }
