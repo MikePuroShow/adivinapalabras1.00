@@ -94,10 +94,11 @@
 
         android:layout_marginEnd="21dp"
 
+        android:onClick="resolver"
+
         android:text="ADIVINAR"
 
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toEndOf="@+id/letra"
         app:layout_constraintTop_toBottomOf="@+id/palabra" />
 
