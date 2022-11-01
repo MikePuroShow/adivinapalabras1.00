@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         //inicializacion arraylist palabras
         palabras = new ArrayList<String>();
+        cargarPalabras();
 
         //inicializacion vistas
         palabraSeleccionada = findViewById(R.id.palabra);
