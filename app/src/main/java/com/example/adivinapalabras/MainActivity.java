@@ -20,7 +20,8 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int intentos;
+    private int intentosPartidas = 5;//variable que gestiona los intentos con los que se iniciara la partida
+    private int intentos;//variable que gestiona los intentos actuales de la partida
     private ArrayList<String> palabras;
     private TextView palabraSeleccionada;
     private TextView intentosRestantes;
@@ -53,32 +54,64 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(R.menu.menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menuAnadirPalabras:
                 EditText palabrasIntroducidas = new EditText(this);
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Añadir palabras");
-                builder.setTitle("Introduzca las palabras que quiere añadir, separadas por coma");
-                builder.setView(palabrasIntroducidas);
-                builder.setPositiveButton("Añadir palabras", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builderPalabras = new AlertDialog.Builder(this);
+                builderPalabras.setTitle("Añadir palabras");
+                builderPalabras.setMessage("Introduzca la/s palabra/s que quiere añadir, separadas por coma");
+                builderPalabras.setView(palabrasIntroducidas);
+                builderPalabras.setPositiveButton("Añadir palabras", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String palabrasLeidas = palabrasIntroducidas.getText().toString();
-                        if (palabrasLeidas.equals("")){
-                            Toast.makeText(MainActivity.this,"Introduce alguna palabra",Toast.LENGTH_LONG).show();
-                        }else{
-                            cargarPalabrasUsuario(palabrasLeidas.replaceAll(" ","").split(","));
+                        if (palabrasLeidas.equals("")) {
+                            Toast.makeText(MainActivity.this, "Introduce alguna palabra", Toast.LENGTH_LONG).show();
+                        } else {
+                            cargarPalabrasUsuario(palabrasLeidas.replaceAll(" ", "").split(","));
                         }
                     }
                 });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                AlertDialog dialogPalabras = builderPalabras.create();
+                dialogPalabras.show();
+                return true;
+            case R.id.menuModificarIntentos:
+                EditText nuevosIntentos = new EditText(this);
+                AlertDialog.Builder builderIntentos = new AlertDialog.Builder(this);
+                builderIntentos.setTitle("Modificar intentos");
+                builderIntentos.setMessage("Introduzca los intentos con los que quiere jugar");
+                builderIntentos.setView(nuevosIntentos);
+                builderIntentos.setPositiveButton("Todas las partidas", new DialogInterface.OnClickListener() {//modifica para todas las partidas
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String intentosLeidos = nuevosIntentos.getText().toString();
+                        if (intentosLeidos.equals("")) {
+                            Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
+                        } else {
+                            calcularIntentos(intentosPartidas = Integer.parseInt(intentosLeidos));
+                            intentos = Integer.parseInt(intentosLeidos);//soluciona poblema para siguientes partidas
+                        }
+                    }
+                });
+                builderIntentos.setNegativeButton("Partida actual", new DialogInterface.OnClickListener() {//modifica solo para la partida actual
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String intentosLeidos = nuevosIntentos.getText().toString();
+                        if (intentosLeidos.equals("")) {
+                            Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
+                        } else {
+                            calcularIntentos(intentos = Integer.parseInt(intentosLeidos));
+                        }
+                    }
+                });
+                AlertDialog dialogIntentos = builderIntentos.create();
+                dialogIntentos.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -88,19 +121,20 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Metodo para cargar palabras desde java al programa
      */
-    public void cargarPalabras(){
-        palabras.add("clase");
-        //palabras.add("ventana");
-        //palabras.add("puerta");
-        //palabras.add("piloto");
-        //palabras.add("hola");
+    public void cargarPalabras() {
+        palabras.add("clase");/*
+        palabras.add("ventana");
+        palabras.add("puerta");
+        palabras.add("piloto");
+        palabras.add("hola");*/
     }
 
     /**
      * Metodo para anadir al programa las palabras que ha elegido el usuario
+     *
      * @param palabrasUsuario array de cadena de caracteres introducido
      */
-    public void cargarPalabrasUsuario(String[] palabrasUsuario){
+    public void cargarPalabrasUsuario(String[] palabrasUsuario) {
         for (int i = 0; i < palabrasUsuario.length; i++) {
             palabras.add(palabrasUsuario[i]);
         }
@@ -114,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false
-        calcularIntentos(intentos = 5);//se inician los intentos
+        intentos = intentosPartidas;//actualiza el valor de la partida que se va a jugar
+        calcularIntentos(intentosPartidas);//se inician los intentos
         mostrarPalabra();//se muestra la palabra seleccionada
 
     }
@@ -156,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (!acertado) {//solo se ejecutara si no se ha acertado letra
-                if(intentos!=0){
+                if (intentos != 0) {
                     calcularIntentos(--intentos);//resta un intento
                     Toast.makeText(this, "Has fallado", Toast.LENGTH_LONG).show();
                 }
