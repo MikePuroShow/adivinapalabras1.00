@@ -1,10 +1,14 @@
 package com.example.adivinapalabras;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,15 +50,60 @@ public class MainActivity extends AppCompatActivity {
         elegirPalabra();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menuAnadirPalabras:
+                EditText palabrasIntroducidas = new EditText(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Añadir palabras");
+                builder.setTitle("Introduzca las palabras que quiere añadir, separadas por coma");
+                builder.setView(palabrasIntroducidas);
+                builder.setPositiveButton("Añadir palabras", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String palabrasLeidas = palabrasIntroducidas.getText().toString();
+                        if (palabrasLeidas.equals("")){
+                            Toast.makeText(MainActivity.this,"Introduce alguna palabra",Toast.LENGTH_LONG).show();
+                        }else{
+                            cargarPalabrasUsuario(palabrasLeidas.replaceAll(" ","").split(","));
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * Metodo para cargar palabras desde java al programa
      */
     public void cargarPalabras(){
         palabras.add("clase");
-        palabras.add("ventana");
-        palabras.add("puerta");
-        palabras.add("piloto");
-        palabras.add("hola");
+        //palabras.add("ventana");
+        //palabras.add("puerta");
+        //palabras.add("piloto");
+        //palabras.add("hola");
+    }
+
+    /**
+     * Metodo para anadir al programa las palabras que ha elegido el usuario
+     * @param palabrasUsuario array de cadena de caracteres introducido
+     */
+    public void cargarPalabrasUsuario(String[] palabrasUsuario){
+        for (int i = 0; i < palabrasUsuario.length; i++) {
+            palabras.add(palabrasUsuario[i]);
+        }
     }
 
     /**
