@@ -95,8 +95,13 @@ public class MainActivity extends AppCompatActivity {
                         if (intentosLeidos.equals("")) {
                             Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
                         } else {
-                            calcularIntentos(intentosPartidas = Integer.parseInt(intentosLeidos));
-                            intentos = Integer.parseInt(intentosLeidos);//soluciona poblema para siguientes partidas
+                            try {
+                                calcularIntentos(intentosPartidas = Integer.parseInt(intentosLeidos));
+                                intentos = Integer.parseInt(intentosLeidos);//soluciona poblema para siguientes partidas
+                            } catch (NumberFormatException nfe) {
+                                Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
+                            }
+
                         }
                     }
                 });
@@ -107,7 +112,12 @@ public class MainActivity extends AppCompatActivity {
                         if (intentosLeidos.equals("")) {
                             Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
                         } else {
-                            calcularIntentos(intentos = Integer.parseInt(intentosLeidos));
+                            try {
+                                calcularIntentos(intentos = Integer.parseInt(intentosLeidos));
+                            } catch (NumberFormatException nfe) {
+                                Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
+                            }
+
                         }
                     }
                 });
@@ -133,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Metodo para cargar palabras desde xml al programa
      */
-    public void cargarPalabrasXML(){
+    public void cargarPalabrasXML() {
         String[] a = getResources().getStringArray(R.array.palabras);
         for (int i = 0; i < a.length; i++) {
             palabras.add(a[i]);
@@ -267,7 +277,8 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton que ejecuta el evento
      */
     public void otraPartida(View vista) {
-        if (!botonResolver.isEnabled()) botonResolver.setEnabled(true);//habilita el boton al empezar una partida si estaba deshabilitado
+        if (!botonResolver.isEnabled())
+            botonResolver.setEnabled(true);//habilita el boton al empezar una partida si estaba deshabilitado
         elegirPalabra();
     }
 
