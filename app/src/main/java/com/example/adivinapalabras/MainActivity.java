@@ -221,11 +221,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void comprobarPartida() {
         if (intentos == 0) {
+            botonResolver.setEnabled(false);//deshabilita el boton al perder
             mostrarDialogo("Has perdido");
         } else {
             boolean[] comprobacionGanado = new boolean[posicionesAcertadas.length];
             Arrays.fill(comprobacionGanado, true);
             if (Arrays.equals(comprobacionGanado, posicionesAcertadas)) {
+                botonResolver.setEnabled(false);//deshabilita el boton al perder
                 mostrarDialogo("Has ganado");
             }
         }
@@ -265,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton que ejecuta el evento
      */
     public void otraPartida(View vista) {
+        if (!botonResolver.isEnabled()) botonResolver.setEnabled(true);//habilita el boton al empezar una partida si estaba deshabilitado
         elegirPalabra();
     }
 
