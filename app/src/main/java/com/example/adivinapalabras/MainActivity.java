@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         //inicializacion arraylist palabras
         palabras = new ArrayList<String>();
         cargarPalabras();
+        cargarPalabrasXML();
 
         //inicializacion vistas
         palabraSeleccionada = findViewById(R.id.palabra);
@@ -122,11 +123,21 @@ public class MainActivity extends AppCompatActivity {
      * Metodo para cargar palabras desde java al programa
      */
     public void cargarPalabras() {
-        palabras.add("clase");/*
+        palabras.add("clase");
         palabras.add("ventana");
         palabras.add("puerta");
         palabras.add("piloto");
-        palabras.add("hola");*/
+        palabras.add("hola");
+    }
+
+    /**
+     * Metodo para cargar palabras desde xml al programa
+     */
+    public void cargarPalabrasXML(){
+        String[] a = getResources().getStringArray(R.array.palabras);
+        for (int i = 0; i < a.length; i++) {
+            palabras.add(a[i]);
+        }
     }
 
     /**
