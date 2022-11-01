@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             //comprobacion de acierto o fallo
             boolean acertado = false;//se da por hecho que no va a acertar la letra
             for (int i = 0; i < palabraActual.length; i++) {
-                if (letra == palabraActual[i]) {
+                if (Character.toLowerCase(letra) == Character.toLowerCase(palabraActual[i])) {//se hace la comparacion no case sensitive
                     posicionesAcertadas[i] = true;//se pone la posicion correspondiente a true
                     acertado = true;//se indica que se ha acertado la letra
                 }
