@@ -13,6 +13,31 @@ public class Partida {
     private char[] palabraActual;
     private boolean[] posicionesAcertadas;
     private char letra;
+    private int posicion;//posicion en el array list de la palabra con la que se esta jugando
+
+    public int getIntentos() {
+        return intentos;
+    }
+
+    public void setIntentos(int intentos) {
+        this.intentos = intentos;
+    }
+
+    public boolean[] getPosicionesAcertadas() {
+        return posicionesAcertadas;
+    }
+
+    public char[] getPalabraActual() {
+        return palabraActual;
+    }
+
+    public void setPalabraActual(char[] palabraActual) {
+        this.palabraActual = palabraActual;
+    }
+
+    public void setPosicionesAcertadas(boolean[] posicionesAcertadas) {
+        this.posicionesAcertadas = posicionesAcertadas;
+    }
 
     public Partida() {
         //inicializacion arraylist palabras
@@ -38,9 +63,9 @@ public class Partida {
      * Metodo para cargar palabras desde xml al programa
      */
     public void cargarPalabrasXML(Context contexto) {
-        String[] a = contexto.getResources().getStringArray(R.array.palabras);
-        for (int i = 0; i < a.length; i++) {
-            palabras.add(a[i]);
+        String[] arrayPalabrasXML = contexto.getResources().getStringArray(R.array.palabras);
+        for (int i = 0; i < arrayPalabrasXML.length; i++) {
+            palabras.add(arrayPalabrasXML[i]);
         }
     }
 
@@ -48,10 +73,10 @@ public class Partida {
      * Metodo para seleccionar una palabra de forma aleatoria e iniciar una partida
      */
     public void elegirPalabraPartida() {
-        int posicion = (int) (Math.random() * palabras.size());//posicion palabra aleatoria
+        posicion = (int) (Math.random() * palabras.size());//posicion palabra aleatoria
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
-        Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false
+        Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
         intentos = palabraActual.length/2;//actualiza el valor de la partida que se va a jugar
         mostrarPalabraPartida();//se muestra la palabra seleccionada
     }
@@ -72,9 +97,7 @@ public class Partida {
         return palabraMostrar;
     }
 
-    public int getIntentos() {
-        return intentos;
-    }
+
 
     /**
      * Metodo que sirve para mostrar el acierto en la palabra o restar intentos

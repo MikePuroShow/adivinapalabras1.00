@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menuAnadirPalabras"
-        android:title="Añadir palabras" />
+        android:id="@+id/palabrasStock"
+        android:title="USAR LAS PALABRAS DEL JUEGO" />
     <item
-        android:id="@+id/menuModificarIntentos"
-        android:title="Modificar Intentos" />
+        android:id="@+id/cargarPalabras"
+        android:title="USAR MIS PALABRAS" />
+    <item
+        android:id="@+id/cargarArrayXML"
+        android:title="USAR ARRAY XML" />
+    <item
+        android:id="@+id/modificarIntentos"
+        android:title="MODIFICA INTENTOS" />
 </menu>
