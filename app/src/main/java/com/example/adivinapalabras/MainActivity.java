@@ -1,5 +1,6 @@
 package com.example.adivinapalabras;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +8,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,13 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private Partida partida;
     private boolean[] palabrasAcertadas;
     private char[] palabra;
+    private boolean primeraEjecucion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         //inicializacion vistas
         palabraSeleccionada = findViewById(R.id.palabra);
@@ -38,14 +41,40 @@ public class MainActivity extends AppCompatActivity {
         letraElegida = findViewById(R.id.letra);
         otraPalabra = findViewById(R.id.nuevo);
 
+        //se inicializa el booleano
+        primeraEjecucion = true;
+
+        //se crea la partida
         partida = new Partida();
 
-
-
-        mostrarPalabra();//no es necesario si hay persistencia
-        calcularIntentos(partida.getIntentos());//no es necesario si hay persistencia
+        //se realizan acciones de la partida
+        mostrarPalabra();
+        calcularIntentos(partida.getIntentos());
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuAnadirPalabras:
+                anadirPalabras();
+                return true;
+            case R.id.menuCambiarDificultad:
+                cambiarDificultad();
+                return true;
+            case R.id.menuPalabrasXML://anade al programa las palabras del xml
+                partida.cargarPalabrasXML(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onPause() {
@@ -62,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
             miEditor.putString("letrasAcertadasChar" + i, String.valueOf(partida.getPalabraActual()[i]));
         }
 
+        miEditor.putBoolean("primeraEjecucion",primeraEjecucion);
+
         miEditor.putInt("tamano", partida.getPosicionesAcertadas().length);
 
         miEditor.apply();
@@ -72,32 +103,37 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
 
-        int tamano = datos.getInt("tamano", partida.getPalabraActual().length);
+        primeraEjecucion = datos.getBoolean("primeraEjecucion",false);
 
-        palabrasAcertadas = new boolean[tamano];
-        palabra = new char[tamano];
+        if (primeraEjecucion){
+            int tamano = datos.getInt("tamano", partida.getPalabraActual().length);
+
+            palabrasAcertadas = new boolean[tamano];
+            palabra = new char[tamano];
 
 
-        //Se restaura el array de booleanos
-        for (int i = 0; i < tamano; i++) {
-            boolean resultado = datos.getBoolean("letrasAcertadas" + i, false);
-            palabrasAcertadas[i] = resultado;
+            //Se restaura el array de booleanos
+            for (int i = 0; i < tamano; i++) {
+                boolean resultado = datos.getBoolean("letrasAcertadas" + i, false);
+                palabrasAcertadas[i] = resultado;
+            }
+            partida.setPosicionesAcertadas(palabrasAcertadas);
+
+            //Se restaura el array de caracteres
+            for (int i = 0; i < tamano; i++) {
+                char letraLeida = datos.getString("letrasAcertadasChar" + i, "_").charAt(0);
+                palabra[i] = letraLeida;
+            }
+            partida.setPalabraActual(palabra);
+
+            //Se restauran los intentos
+            int intentos = datos.getInt("intentos", partida.getIntentos());
+            partida.setIntentos(intentos);
+            calcularIntentos(intentos);//es necesario para el funcionamiento
+
+            mostrarPalabra();
         }
-        partida.setPosicionesAcertadas(palabrasAcertadas);
 
-        //Se restaura el array de caracteres
-        for (int i = 0; i < tamano; i++) {
-            char letraLeida = datos.getString("letrasAcertadasChar" + i, "_").charAt(0);
-            palabra[i] = letraLeida;
-        }
-        partida.setPalabraActual(palabra);
-
-        //Se restauran los intentos
-        int intentos = datos.getInt("intentos", partida.getIntentos());
-        partida.setIntentos(intentos);
-        calcularIntentos(intentos);//es necesario para el funcionamiento
-
-        mostrarPalabra();
     }
 
     /**
@@ -187,6 +223,62 @@ public class MainActivity extends AppCompatActivity {
         partida.elegirPalabraPartida();
         mostrarPalabra();
         calcularIntentos(partida.getIntentos());
+    }
+
+    /**
+     * Metodo para modificar la dificultad de las partidas
+     */
+    public void cambiarDificultad(){
+        AlertDialog.Builder builderDificultad = new AlertDialog.Builder(this);
+        builderDificultad.setTitle("Modificar dificultad de la partida");
+        builderDificultad.setMessage("Seleccione la dificultad que desea:" +
+                "\nFacil +1 intento extra" +
+                "\nNormal intentos normales (por defecto)" +
+                "\nDificil -1 intento");
+        builderDificultad.setPositiveButton("Facil", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                partida.setDificultad(1);
+            }
+        });
+        builderDificultad.setNeutralButton("Normal", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                partida.setDificultad(0);
+            }
+        });
+        builderDificultad.setNegativeButton("Dificil", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                partida.setDificultad(-1);
+            }
+        });
+        AlertDialog dialogPalabras = builderDificultad.create();
+        dialogPalabras.show();
+    }
+
+    /**
+     * Metodo para anadir palabras a la partida
+     */
+    public void anadirPalabras(){
+        EditText palabrasIntroducidas = new EditText(this);
+        AlertDialog.Builder builderPalabras = new AlertDialog.Builder(this);
+        builderPalabras.setTitle("Añadir palabras");
+        builderPalabras.setMessage("Introduzca la/s palabra/s que quiere añadir, separadas por coma");
+        builderPalabras.setView(palabrasIntroducidas);
+        builderPalabras.setPositiveButton("Añadir palabras", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String palabrasLeidas = palabrasIntroducidas.getText().toString();
+                if (palabrasLeidas.equals("")) {
+                    Toast.makeText(MainActivity.this, "Introduce alguna palabra", Toast.LENGTH_LONG).show();
+                } else {
+                    partida.cargarPalabrasUsuario(palabrasLeidas.replaceAll(" ", "").split(","));
+                }
+            }
+        });
+        AlertDialog dialogPalabras = builderPalabras.create();
+        dialogPalabras.show();
     }
 
 }

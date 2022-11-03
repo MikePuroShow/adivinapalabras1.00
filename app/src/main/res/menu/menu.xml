@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/palabrasStock"
-        android:title="USAR LAS PALABRAS DEL JUEGO" />
+        android:id="@+id/menuAnadirPalabras"
+        android:title="Añadir palabras" />
     <item
-        android:id="@+id/cargarPalabras"
-        android:title="USAR MIS PALABRAS" />
+        android:id="@+id/menuCambiarDificultad"
+        android:title="Cambiar dificultad" />
     <item
-        android:id="@+id/cargarArrayXML"
-        android:title="USAR ARRAY XML" />
-    <item
-        android:id="@+id/modificarIntentos"
-        android:title="MODIFICA INTENTOS" />
+        android:id="@+id/menuPalabrasXML"
+        android:title="Cargar palabras XML" />
 </menu>

@@ -5,6 +5,7 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Partida {
 
@@ -14,6 +15,7 @@ public class Partida {
     private boolean[] posicionesAcertadas;
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
+    private int dificultad = 0;//dificultad de la partida, -1 para dificil, 0 para normal y 1 para facil
 
     public int getIntentos() {
         return intentos;
@@ -39,6 +41,10 @@ public class Partida {
         this.posicionesAcertadas = posicionesAcertadas;
     }
 
+    public void setDificultad(int dificultad) {
+        this.dificultad = dificultad;
+    }
+
     public Partida() {
         //inicializacion arraylist palabras
         palabras = new ArrayList<String>();
@@ -52,11 +58,11 @@ public class Partida {
      * Metodo para cargar palabras desde java al programa
      */
     public void cargarPalabras() {
-        palabras.add("clase");
+        palabras.add("clase");/*
         palabras.add("ventana");
         palabras.add("puerta");
         palabras.add("piloto");
-        palabras.add("hola");
+        palabras.add("hola");*/
     }
 
     /**
@@ -70,6 +76,17 @@ public class Partida {
     }
 
     /**
+     * Metodo para anadir al programa las palabras que ha elegido el usuario
+     *
+     * @param palabrasUsuario array de cadena de caracteres introducido
+     */
+    public void cargarPalabrasUsuario(String[] palabrasUsuario) {
+        for (int i = 0; i < palabrasUsuario.length; i++) {
+            palabras.add(palabrasUsuario[i]);
+        }
+    }
+
+    /**
      * Metodo para seleccionar una palabra de forma aleatoria e iniciar una partida
      */
     public void elegirPalabraPartida() {
@@ -77,7 +94,8 @@ public class Partida {
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
-        intentos = palabraActual.length/2;//actualiza el valor de la partida que se va a jugar
+        descubrirLetras();
+        intentos = (palabraActual.length/2)+dificultad;//actualiza el valor de la partida que se va a jugar
         mostrarPalabraPartida();//se muestra la palabra seleccionada
     }
 
@@ -149,6 +167,26 @@ public class Partida {
             }
         }
         return ganado;
+    }
+
+    /**
+     * Metodo que descubre letras de la palabra, en funcion de la dificultad de la partida
+     * facil: 1/3 de las letras + 1
+     * Normal: 1/3 de las letras
+     * Dificil: 1/3 de las letras -1
+     */
+    public void descubrirLetras(){
+        int cantidadLetras = (palabraActual.length/3)+dificultad;
+        int i = 0;
+        while(i<cantidadLetras){
+            Random aleatorio = new Random();
+            int numAleatorio = aleatorio.nextInt(palabraActual.length);
+            System.out.println(aleatorio);
+            if(!posicionesAcertadas[numAleatorio]){
+                posicionesAcertadas[numAleatorio]=true;
+                i++;
+            }
+        }
     }
 
 }
