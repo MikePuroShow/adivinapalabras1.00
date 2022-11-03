@@ -1,22 +1,15 @@
 package com.example.adivinapalabras;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,102 +37,11 @@ public class MainActivity extends AppCompatActivity {
         calcularIntentos(p.getIntentos());
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }*/
-
-    /*
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuAnadirPalabras:
-                EditText palabrasIntroducidas = new EditText(this);
-                AlertDialog.Builder builderPalabras = new AlertDialog.Builder(this);
-                builderPalabras.setTitle("Añadir palabras");
-                builderPalabras.setMessage("Introduzca la/s palabra/s que quiere añadir, separadas por coma");
-                builderPalabras.setView(palabrasIntroducidas);
-                builderPalabras.setPositiveButton("Añadir palabras", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String palabrasLeidas = palabrasIntroducidas.getText().toString();
-                        if (palabrasLeidas.equals("")) {
-                            Toast.makeText(MainActivity.this, "Introduce alguna palabra", Toast.LENGTH_LONG).show();
-                        } else {
-                            cargarPalabrasUsuario(palabrasLeidas.replaceAll(" ", "").split(","));
-                        }
-                    }
-                });
-                AlertDialog dialogPalabras = builderPalabras.create();
-                dialogPalabras.show();
-                return true;
-            case R.id.menuModificarIntentos:
-                EditText nuevosIntentos = new EditText(this);
-                AlertDialog.Builder builderIntentos = new AlertDialog.Builder(this);
-                builderIntentos.setTitle("Modificar intentos");
-                builderIntentos.setMessage("Introduzca los intentos con los que quiere jugar");
-                builderIntentos.setView(nuevosIntentos);
-                builderIntentos.setPositiveButton("Todas las partidas", new DialogInterface.OnClickListener() {//modifica para todas las partidas
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String intentosLeidos = nuevosIntentos.getText().toString();
-                        if (intentosLeidos.equals("")) {
-                            Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
-                        } else {
-                            try {
-                                calcularIntentos(intentosPartidas = Integer.parseInt(intentosLeidos));
-                                intentos = Integer.parseInt(intentosLeidos);//soluciona poblema para siguientes partidas
-                            } catch (NumberFormatException nfe) {
-                                Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    }
-                });
-                builderIntentos.setNegativeButton("Partida actual", new DialogInterface.OnClickListener() {//modifica solo para la partida actual
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String intentosLeidos = nuevosIntentos.getText().toString();
-                        if (intentosLeidos.equals("")) {
-                            Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
-                        } else {
-                            try {
-                                calcularIntentos(intentos = Integer.parseInt(intentosLeidos));
-                            } catch (NumberFormatException nfe) {
-                                Toast.makeText(MainActivity.this, "Debes introducir un número", Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    }
-                });
-                AlertDialog dialogIntentos = builderIntentos.create();
-                dialogIntentos.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
-
-
-    /**
-     * Metodo para anadir al programa las palabras que ha elegido el usuario
-     *
-     * @param palabrasUsuario array de cadena de caracteres introducido
-     *//*
-    public void cargarPalabrasUsuario(String[] palabrasUsuario) {
-        for (int i = 0; i < palabrasUsuario.length; i++) {
-            palabras.add(palabrasUsuario[i]);
-        }
-    }*/
-
     /**
      * Metodo que muestra la palabra con la que se esta jugando en su estado actual
      */
     public void mostrarPalabra() {
-        palabraSeleccionada.setText(p.mostrarPalabra());
+        palabraSeleccionada.setText(p.mostrarPalabraPartida());
     }
 
     /**
@@ -148,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton adivinar
      */
     public void resolver(View vista) {
-        String cadena = p.resolver(letraElegida);
+        String cadena = p.resolverPartida(letraElegida);
         if (cadena.equals("")) {//si no se ha elegido ninguna letra
             Toast.makeText(this, "No has introducido ninguna letra", Toast.LENGTH_LONG).show();
         } else {
@@ -163,14 +65,14 @@ public class MainActivity extends AppCompatActivity {
             mostrarPalabra();
 
             //se comprueba si se ha ganado o se ha perdido la partida
-            comprobarPartida();
+            comprobar();
         }
     }
 
     /**
      * Metodo para comprobar si se ha ganado o si se ha perdido la partida
      */
-    public void comprobarPartida() {
+    public void comprobar() {
         if (p.getIntentos()==0) {
             botonResolver.setEnabled(false);//deshabilita el boton al perder
             mostrarDialogo("Has perdido");
@@ -219,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         if (!botonResolver.isEnabled()){
             botonResolver.setEnabled(true);//habilita el boton al empezar una partida si estaba deshabilitado
         }
-        p.elegirPalabra();
+        p.elegirPalabraPartida();
         mostrarPalabra();
         calcularIntentos(p.getIntentos());
     }

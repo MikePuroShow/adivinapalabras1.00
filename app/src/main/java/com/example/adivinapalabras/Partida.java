@@ -1,8 +1,7 @@
 package com.example.adivinapalabras;
 
-import android.view.View;
+import android.content.Context;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +20,7 @@ public class Partida {
         cargarPalabras();
 
         //inicio primera partida
-        elegirPalabra();
+        elegirPalabraPartida();
     }
 
     /**
@@ -36,22 +35,32 @@ public class Partida {
     }
 
     /**
+     * Metodo para cargar palabras desde xml al programa
+     */
+    public void cargarPalabrasXML(Context contexto) {
+        String[] a = contexto.getResources().getStringArray(R.array.palabras);
+        for (int i = 0; i < a.length; i++) {
+            palabras.add(a[i]);
+        }
+    }
+
+    /**
      * Metodo para seleccionar una palabra de forma aleatoria e iniciar una partida
      */
-    public void elegirPalabra() {
+    public void elegirPalabraPartida() {
         int posicion = (int) (Math.random() * palabras.size());//posicion palabra aleatoria
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false
         intentos = palabraActual.length/2;//actualiza el valor de la partida que se va a jugar
-        mostrarPalabra();//se muestra la palabra seleccionada
+        mostrarPalabraPartida();//se muestra la palabra seleccionada
     }
 
 
     /**
      * Metodo que devuelve una cadena con el estado actual de la palabra
      */
-    public String mostrarPalabra() {
+    public String mostrarPalabraPartida() {
         String palabraMostrar = "";
         for (int i = 0; i < palabraActual.length; i++) {
             if (posicionesAcertadas[i]) {
@@ -70,7 +79,7 @@ public class Partida {
     /**
      * Metodo que sirve para mostrar el acierto en la palabra o restar intentos
      */
-    public String resolver(EditText letraElegida) {
+    public String resolverPartida(EditText letraElegida) {
         String cadenaRetorno = "";
         if (letraElegida.getText().toString().equals("")) {//si no se ha elegido ninguna letra
         } else {
