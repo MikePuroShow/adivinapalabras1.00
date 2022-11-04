@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         partida = new Partida();
 
         //se realizan acciones de la partida
-        mostrarPalabra();
-        calcularIntentos(partida.getIntentos());
+        //mostrarPalabra();
+        //calcularIntentos(partida.getIntentos());
     }
 
     @Override
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
         primeraEjecucion = datos.getBoolean("primeraEjecucion",false);
 
-        if (!primeraEjecucion){
+        if (primeraEjecucion){
             int tamano = datos.getInt("tamano", partida.getPalabraActual().length);
 
             palabrasAcertadas = new boolean[tamano];
@@ -139,10 +139,12 @@ public class MainActivity extends AppCompatActivity {
             //Se restauran los intentos
             int intentos = datos.getInt("intentos", partida.getIntentos());
             partida.setIntentos(intentos);
-            calcularIntentos(intentos);//es necesario para el funcionamiento
 
-            mostrarPalabra();
         }
+
+        calcularIntentos(partida.getIntentos());//es necesario para el funcionamiento
+
+        mostrarPalabra();
 
     }
 
