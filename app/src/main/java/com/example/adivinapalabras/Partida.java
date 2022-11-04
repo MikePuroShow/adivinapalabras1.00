@@ -30,11 +30,9 @@ public class Partida {
      * Metodo para cargar palabras desde java al programa
      */
     public void cargarPalabras() {
-        palabras.add("clase");/*
-        palabras.add("ventana");
-        palabras.add("puerta");
-        palabras.add("piloto");
-        palabras.add("hola");*/
+        palabras.add("juego");/*
+        palabras.add("agua");
+        palabras.add("comida");*/
     }
 
     /**
