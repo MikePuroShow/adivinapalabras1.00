@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         primeraEjecucion = datos.getBoolean("primeraEjecucion",false);
 
-        if (primeraEjecucion){
+        if (!primeraEjecucion){
             int tamano = datos.getInt("tamano", partida.getPalabraActual().length);
 
             palabrasAcertadas = new boolean[tamano];
