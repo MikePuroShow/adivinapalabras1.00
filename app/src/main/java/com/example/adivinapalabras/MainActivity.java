@@ -41,15 +41,12 @@ public class MainActivity extends AppCompatActivity {
         letraElegida = findViewById(R.id.letra);
         otraPalabra = findViewById(R.id.nuevo);
 
-        //se inicializa el booleano
-        primeraEjecucion = true;
-
         //se crea la partida
         partida = new Partida();
 
         //se realizan acciones de la partida
-        //mostrarPalabra();
-        //calcularIntentos(partida.getIntentos());
+        mostrarPalabra();
+        calcularIntentos(partida.getIntentos());
     }
 
     @Override
@@ -110,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
 
-        primeraEjecucion = datos.getBoolean("primeraEjecucion",false);
+        primeraEjecucion = datos.getBoolean("primeraEjecucion",true);
 
-        if (primeraEjecucion){
+        if (!primeraEjecucion){
             int tamano = datos.getInt("tamano", partida.getPalabraActual().length);
 
             palabrasAcertadas = new boolean[tamano];
@@ -140,29 +137,16 @@ public class MainActivity extends AppCompatActivity {
             int intentos = datos.getInt("intentos", partida.getIntentos());
             partida.setIntentos(intentos);
 
+            calcularIntentos(intentos);//es necesario para el funcionamiento
+
+            mostrarPalabra();
+
+
         }
 
-        calcularIntentos(partida.getIntentos());//es necesario para el funcionamiento
-
-        mostrarPalabra();
+        primeraEjecucion=false;
 
     }
-
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        onPause();
-        super.onSaveInstanceState(outState);
-    }
-
-
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        onResume();
-    }
-
 
     /**
      * Metodo que muestra la palabra con la que se esta jugando en su estado actual
