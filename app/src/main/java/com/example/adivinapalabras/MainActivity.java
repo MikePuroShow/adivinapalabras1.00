@@ -82,17 +82,24 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor miEditor = datos.edit();
 
+        //se guarda el array de booleanos
         miEditor.putInt("intentos", partida.getIntentos());
         for (int i = 0; i < partida.getPosicionesAcertadas().length; i++) {
             miEditor.putBoolean("letrasAcertadas" + i, partida.getPosicionesAcertadas()[i]);
         }
 
+        //se guarda el array de caracteres
         for (int i = 0; i < partida.getPalabraActual().length; i++) {
             miEditor.putString("letrasAcertadasChar" + i, String.valueOf(partida.getPalabraActual()[i]));
         }
 
+        //se guarda si es la primera ejecucion o no
         miEditor.putBoolean("primeraEjecucion",primeraEjecucion);
 
+        //se guarda la dificultad
+        miEditor.putInt("dificultad",partida.getDificultad());
+
+        //se guarda el tamano de los arrays
         miEditor.putInt("tamano", partida.getPosicionesAcertadas().length);
 
         miEditor.apply();
@@ -125,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
                 palabra[i] = letraLeida;
             }
             partida.setPalabraActual(palabra);
+
+            //se restaura la dificultad
+            partida.setDificultad(datos.getInt("dificultad",0));
 
             //Se restauran los intentos
             int intentos = datos.getInt("intentos", partida.getIntentos());

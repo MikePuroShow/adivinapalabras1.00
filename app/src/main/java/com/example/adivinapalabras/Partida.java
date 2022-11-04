@@ -17,34 +17,6 @@ public class Partida {
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
     private int dificultad = 0;//dificultad de la partida, -1 para dificil, 0 para normal y 1 para facil
 
-    public int getIntentos() {
-        return intentos;
-    }
-
-    public void setIntentos(int intentos) {
-        this.intentos = intentos;
-    }
-
-    public boolean[] getPosicionesAcertadas() {
-        return posicionesAcertadas;
-    }
-
-    public char[] getPalabraActual() {
-        return palabraActual;
-    }
-
-    public void setPalabraActual(char[] palabraActual) {
-        this.palabraActual = palabraActual;
-    }
-
-    public void setPosicionesAcertadas(boolean[] posicionesAcertadas) {
-        this.posicionesAcertadas = posicionesAcertadas;
-    }
-
-    public void setDificultad(int dificultad) {
-        this.dificultad = dificultad;
-    }
-
     public Partida() {
         //inicializacion arraylist palabras
         palabras = new ArrayList<String>();
@@ -187,6 +159,39 @@ public class Partida {
                 i++;
             }
         }
+    }
+
+    //getters y setters
+    public int getIntentos() {
+        return intentos;
+    }
+
+    public void setIntentos(int intentos) {
+        this.intentos = intentos;
+    }
+
+    public boolean[] getPosicionesAcertadas() {
+        return posicionesAcertadas;
+    }
+
+    public void setPosicionesAcertadas(boolean[] posicionesAcertadas) {
+        this.posicionesAcertadas = posicionesAcertadas;
+    }
+
+    public char[] getPalabraActual() {
+        return palabraActual;
+    }
+
+    public void setPalabraActual(char[] palabraActual) {
+        this.palabraActual = palabraActual;
+    }
+
+    public void setDificultad(int dificultad) {
+        this.dificultad = dificultad;
+    }
+
+    public int getDificultad() {
+        return dificultad;
     }
 
 }
