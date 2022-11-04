@@ -148,6 +148,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        onPause();
+        super.onSaveInstanceState(outState);
+    }
+
+
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        onResume();
+    }
+
+
     /**
      * Metodo que muestra la palabra con la que se esta jugando en su estado actual
      */
