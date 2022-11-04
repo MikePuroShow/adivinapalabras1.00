@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         partida = new Partida();
 
         //se realizan acciones de la partida
-        mostrarPalabra();
-        calcularIntentos(partida.getIntentos());
+        //mostrarPalabra();
+        //calcularIntentos(partida.getIntentos());
     }
 
     @Override
@@ -137,12 +137,14 @@ public class MainActivity extends AppCompatActivity {
             int intentos = datos.getInt("intentos", partida.getIntentos());
             partida.setIntentos(intentos);
 
-            calcularIntentos(intentos);//es necesario para el funcionamiento
 
-            mostrarPalabra();
 
 
         }
+
+        calcularIntentos(partida.getIntentos());//es necesario para el funcionamiento
+
+        mostrarPalabra();
 
         primeraEjecucion=false;
 
