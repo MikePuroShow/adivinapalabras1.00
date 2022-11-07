@@ -15,7 +15,6 @@ public class Partida {
     private boolean[] posicionesAcertadas;
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
-    private int dificultad = 0;//dificultad de la partida, -1 para dificil, 0 para normal y 1 para facil
 
     public Partida() {
         //inicializacion arraylist palabras
@@ -29,20 +28,10 @@ public class Partida {
     /**
      * Metodo para cargar palabras desde java al programa
      */
-    public void cargarPalabras() {
-        palabras.add("juego");/*
+    public void cargarPalabras() {//todo revisar xk no se ven los 2 primeros
+        palabras.add("juego");
         palabras.add("agua");
-        palabras.add("comida");*/
-    }
-
-    /**
-     * Metodo para cargar palabras desde xml al programa
-     */
-    public void cargarPalabrasXML(Context contexto) {
-        String[] arrayPalabrasXML = contexto.getResources().getStringArray(R.array.palabras);
-        for (int i = 0; i < arrayPalabrasXML.length; i++) {
-            palabras.add(arrayPalabrasXML[i]);
-        }
+        palabras.add("sol");
     }
 
     /**
@@ -50,10 +39,8 @@ public class Partida {
      *
      * @param palabrasUsuario array de cadena de caracteres introducido
      */
-    public void cargarPalabrasUsuario(String[] palabrasUsuario) {
-        for (int i = 0; i < palabrasUsuario.length; i++) {
-            palabras.add(palabrasUsuario[i]);
-        }
+    public void cargarPalabrasUsuario(String palabrasUsuario) {
+        palabras.add(palabrasUsuario);
     }
 
     /**
@@ -64,8 +51,7 @@ public class Partida {
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
-        descubrirLetras();
-        intentos = (palabraActual.length/2)+dificultad;//actualiza el valor de la partida que se va a jugar
+        intentos = (palabraActual.length / 2);//actualiza el valor de la partida que se va a jugar
         mostrarPalabraPartida();//se muestra la palabra seleccionada
     }
 
@@ -86,7 +72,6 @@ public class Partida {
     }
 
 
-
     /**
      * Metodo que sirve para mostrar el acierto en la palabra o restar intentos
      */
@@ -98,7 +83,7 @@ public class Partida {
             cadenaRetorno = letraElegida.getText().toString();//la letra en el edit text, formato cadena
             letra = cadenaRetorno.charAt(0);//la letra elegida en formato char
 
-            if(!acertado())intentos--;
+            if (!acertado()) intentos--;
 
             //se comprueba si se ha ganado o se ha perdido la partida
             comprobarPartida();
@@ -108,9 +93,10 @@ public class Partida {
 
     /**
      * Metodo que pone las posiciones acertadas a true
+     *
      * @return retorna si se ha acertado o si se ha fallado
      */
-    public boolean acertado(){
+    public boolean acertado() {
         //comprobacion de acierto o fallo
         boolean acertado = false;//se da por hecho que no va a acertar la letra
         for (int i = 0; i < palabraActual.length; i++) {
@@ -139,26 +125,6 @@ public class Partida {
         return ganado;
     }
 
-    /**
-     * Metodo que descubre letras de la palabra, en funcion de la dificultad de la partida
-     * facil: 1/3 de las letras + 1
-     * Normal: 1/3 de las letras
-     * Dificil: 1/3 de las letras -1
-     */
-    public void descubrirLetras(){
-        int cantidadLetras = (palabraActual.length/3)+dificultad;
-        int i = 0;
-        while(i<cantidadLetras){
-            Random aleatorio = new Random();
-            int numAleatorio = aleatorio.nextInt(palabraActual.length);
-            System.out.println(aleatorio);
-            if(!posicionesAcertadas[numAleatorio]){
-                posicionesAcertadas[numAleatorio]=true;
-                i++;
-            }
-        }
-    }
-
     //getters y setters
     public int getIntentos() {
         return intentos;
@@ -184,12 +150,16 @@ public class Partida {
         this.palabraActual = palabraActual;
     }
 
-    public void setDificultad(int dificultad) {
-        this.dificultad = dificultad;
+    public ArrayList<String> getPalabras() {
+        return palabras;
     }
 
-    public int getDificultad() {
-        return dificultad;
+    public int getPosicion() {
+        return posicion;
+    }
+
+    public void setPalabras(ArrayList<String> palabras) {
+        this.palabras = palabras;
     }
 
 }

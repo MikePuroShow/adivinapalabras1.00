@@ -5,9 +5,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,9 +43,17 @@ public class MainActivity extends AppCompatActivity {
         //se crea la partida
         partida = new Partida();
 
+        Bundle datos = getIntent().getExtras();
+        if(datos!=null){
+            partida.getPalabras().clear();
+
+            partida.setPalabras(datos.getStringArrayList("palabrasDevueltas"));
+        }
+
+
         //se realizan acciones de la partida
-        //mostrarPalabra();
-        //calcularIntentos(partida.getIntentos());
+        mostrarPalabra();
+        calcularIntentos(partida.getIntentos());
     }
 
     @Override
@@ -59,95 +66,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuVerPalabra:
+                Toast.makeText(this,"La palabra actual es: "+partida.getPalabras().get(partida.getPosicion()), Toast.LENGTH_LONG).show();
+                return true;
             case R.id.menuAnadirPalabras:
                 anadirPalabras();
                 return true;
-            case R.id.menuCambiarDificultad:
-                cambiarDificultad();
+            case R.id.menuMostrarPalabras:
+                mostrarPalabrasPartida();
                 return true;
-            case R.id.menuPalabrasXML://anade al programa las palabras del xml
-                partida.cargarPalabrasXML(this);
+            case R.id.menuSalirAplicacion:
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor miEditor = datos.edit();
-
-        //se guarda el array de booleanos
-        miEditor.putInt("intentos", partida.getIntentos());
-        for (int i = 0; i < partida.getPosicionesAcertadas().length; i++) {
-            miEditor.putBoolean("letrasAcertadas" + i, partida.getPosicionesAcertadas()[i]);
-        }
-
-        //se guarda el array de caracteres
-        for (int i = 0; i < partida.getPalabraActual().length; i++) {
-            miEditor.putString("letrasAcertadasChar" + i, String.valueOf(partida.getPalabraActual()[i]));
-        }
-
-        //se guarda si es la primera ejecucion o no
-        miEditor.putBoolean("primeraEjecucion",primeraEjecucion);
-
-        //se guarda la dificultad
-        miEditor.putInt("dificultad",partida.getDificultad());
-
-        //se guarda el tamano de los arrays
-        miEditor.putInt("tamano", partida.getPosicionesAcertadas().length);
-
-        miEditor.apply();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
-
-        primeraEjecucion = datos.getBoolean("primeraEjecucion",true);
-
-        if (!primeraEjecucion){
-            int tamano = datos.getInt("tamano", partida.getPalabraActual().length);
-
-            palabrasAcertadas = new boolean[tamano];
-            palabra = new char[tamano];
-
-
-            //Se restaura el array de booleanos
-            for (int i = 0; i < tamano; i++) {
-                boolean resultado = datos.getBoolean("letrasAcertadas" + i, false);
-                palabrasAcertadas[i] = resultado;
-            }
-            partida.setPosicionesAcertadas(palabrasAcertadas);
-
-            //Se restaura el array de caracteres
-            for (int i = 0; i < tamano; i++) {
-                char letraLeida = datos.getString("letrasAcertadasChar" + i, "_").charAt(0);
-                palabra[i] = letraLeida;
-            }
-            partida.setPalabraActual(palabra);
-
-            //se restaura la dificultad
-            partida.setDificultad(datos.getInt("dificultad",0));
-
-            //Se restauran los intentos
-            int intentos = datos.getInt("intentos", partida.getIntentos());
-            partida.setIntentos(intentos);
-
-
-
-
-        }
-
-        calcularIntentos(partida.getIntentos());//es necesario para el funcionamiento
-
-        mostrarPalabra();
-
-        primeraEjecucion=false;
-
     }
 
     /**
@@ -239,37 +172,6 @@ public class MainActivity extends AppCompatActivity {
         calcularIntentos(partida.getIntentos());
     }
 
-    /**
-     * Metodo para modificar la dificultad de las partidas
-     */
-    public void cambiarDificultad(){
-        AlertDialog.Builder builderDificultad = new AlertDialog.Builder(this);
-        builderDificultad.setTitle("Modificar dificultad de la partida");
-        builderDificultad.setMessage("Seleccione la dificultad que desea:" +
-                "\nFacil +1 intento extra" +
-                "\nNormal intentos normales (por defecto)" +
-                "\nDificil -1 intento");
-        builderDificultad.setPositiveButton("Facil", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                partida.setDificultad(1);
-            }
-        });
-        builderDificultad.setNeutralButton("Normal", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                partida.setDificultad(0);
-            }
-        });
-        builderDificultad.setNegativeButton("Dificil", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                partida.setDificultad(-1);
-            }
-        });
-        AlertDialog dialogPalabras = builderDificultad.create();
-        dialogPalabras.show();
-    }
 
     /**
      * Metodo para anadir palabras a la partida
@@ -277,22 +179,35 @@ public class MainActivity extends AppCompatActivity {
     public void anadirPalabras(){
         EditText palabrasIntroducidas = new EditText(this);
         AlertDialog.Builder builderPalabras = new AlertDialog.Builder(this);
-        builderPalabras.setTitle("Añadir palabras");
-        builderPalabras.setMessage("Introduzca la/s palabra/s que quiere añadir, separadas por coma");
+        builderPalabras.setTitle("Añadir palabra");
+        builderPalabras.setMessage("Introduzca la palabra que quiere añadir");
         builderPalabras.setView(palabrasIntroducidas);
-        builderPalabras.setPositiveButton("Añadir palabras", new DialogInterface.OnClickListener() {
+        builderPalabras.setPositiveButton("Añadir palabra", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String palabrasLeidas = palabrasIntroducidas.getText().toString();
-                if (palabrasLeidas.equals("")) {
-                    Toast.makeText(MainActivity.this, "Introduce alguna palabra", Toast.LENGTH_LONG).show();
+                String palabrasLeida = palabrasIntroducidas.getText().toString();
+                if (palabrasLeida.equals("")) {
+                    Toast.makeText(MainActivity.this, "Introduce una palabra", Toast.LENGTH_LONG).show();
                 } else {
-                    partida.cargarPalabrasUsuario(palabrasLeidas.replaceAll(" ", "").split(","));
+                    partida.cargarPalabrasUsuario(palabrasLeida);
                 }
             }
         });
         AlertDialog dialogPalabras = builderPalabras.create();
         dialogPalabras.show();
+    }
+
+    /**
+     * Metodo para mostrar las palabras de la partida en un list view
+     */
+    public void mostrarPalabrasPartida(){
+        Intent i = new Intent(this,mostrarPalabras.class);
+
+        i.putExtra("palabras",partida.getPalabras());
+
+        startActivity(i);
+
+
     }
 
 }

@@ -2,12 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/menuVerPalabra"
+        android:title="Ver palabra" />
+    <item
         android:id="@+id/menuAnadirPalabras"
         android:title="Añadir palabras" />
     <item
-        android:id="@+id/menuCambiarDificultad"
-        android:title="Cambiar dificultad" />
+        android:id="@+id/menuMostrarPalabras"
+        android:title="Mostrar palabras" />
     <item
-        android:id="@+id/menuPalabrasXML"
-        android:title="Cargar palabras XML" />
+        android:id="@+id/menuSalirAplicacion"
+        android:title="Salir" />
 </menu>
