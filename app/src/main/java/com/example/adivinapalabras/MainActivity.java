@@ -45,13 +45,6 @@ public class MainActivity extends AppCompatActivity {
         //se crea la partida
         partida = new Partida();
 
-        partida.guardarPalabrasTXT(this);
-        try {
-            partida.cargarPalabrasTXT(this);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
         Bundle datos = getIntent().getExtras();
         if(datos!=null){
             partida.getPalabras().clear();

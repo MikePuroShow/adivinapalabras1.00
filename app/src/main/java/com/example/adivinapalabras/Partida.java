@@ -27,9 +27,8 @@ public class Partida {
 
     public Partida() {
         //inicializacion arraylist palabras
-        palabras = new ArrayList<String>();
+        palabras = new ArrayList<>();
         cargarPalabras();
-
         //inicio primera partida
         elegirPalabraPartida();
     }
@@ -134,38 +133,41 @@ public class Partida {
         return ganado;
     }
 
-    public void guardarPalabrasTXT(Context contexto){
+    public void guardarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
         try (FileOutputStream fos = contexto.openFileOutput(nombreArchivo, Context.MODE_PRIVATE)) {
-            FileWriter fw = new FileWriter(nombreArchivo);
-            for (String palabra: palabras) {
-                fw.write(palabra);
+            FileWriter fw = new FileWriter(fos.getFD());
+            for (int i = 0; i < palabras.size(); i++) {
+                fw.write(palabras.get(i) + "\n");
             }
+            fw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
         }
     }
 
-    public void cargarPalabrasTXT(Context contexto) throws FileNotFoundException {
+    public void cargarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
-        FileInputStream fis = contexto.openFileInput(nombreArchivo);
-        InputStreamReader inputStreamReader =
-                new InputStreamReader(fis, StandardCharsets.UTF_8);
-        StringBuilder stringBuilder = new StringBuilder();
+        FileInputStream fis = null;
+
+        try {
+            fis = contexto.openFileInput(nombreArchivo);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
         try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
             String line = reader.readLine();
+            palabras.clear();
             while (line != null) {
-                stringBuilder.append(line).append('\n');
                 line = reader.readLine();
-                System.out.println("La linea es " + line);
+                palabras.add(line);
             }
         } catch (IOException e) {
             // Error occurred when opening raw file for reading.
-        } finally {
-            String contents = stringBuilder.toString();
         }
-
     }
 
     //getters y setters
