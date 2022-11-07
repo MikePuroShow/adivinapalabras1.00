@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         partida.cargarPalabrasTXT(this);
         partida.elegirPalabraPartida();
 
+        //partida.guardarPalabrasTXT(this);
+
         Bundle datos = getIntent().getExtras();
         if(datos!=null){
             partida.getPalabras().clear();
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mostrarPalabra();
         calcularIntentos(partida.getIntentos());
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

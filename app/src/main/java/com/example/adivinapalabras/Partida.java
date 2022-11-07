@@ -55,12 +55,18 @@ public class Partida {
      * Metodo para seleccionar una palabra de forma aleatoria e iniciar una partida
      */
     public void elegirPalabraPartida() {
+
         posicion = (int) (Math.random() * palabras.size());//posicion palabra aleatoria
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
         intentos = (palabraActual.length / 2);//actualiza el valor de la partida que se va a jugar
         mostrarPalabraPartida();//se muestra la palabra seleccionada
+
+
+        for(String palabra: palabras){
+            System.out.println(palabra);
+        }
     }
 
 
@@ -162,8 +168,8 @@ public class Partida {
             String line = reader.readLine();
             palabras.clear();
             while (line != null) {
-                line = reader.readLine();
                 palabras.add(line);
+                line = reader.readLine();
             }
         fis.close();
         } catch (IOException e) {
