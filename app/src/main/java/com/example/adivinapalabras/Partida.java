@@ -28,9 +28,9 @@ public class Partida {
     public Partida() {
         //inicializacion arraylist palabras
         palabras = new ArrayList<>();
-        cargarPalabras();
+        //cargarPalabras();
         //inicio primera partida
-        elegirPalabraPartida();
+        //elegirPalabraPartida();
     }
 
     /**
@@ -165,6 +165,7 @@ public class Partida {
                 line = reader.readLine();
                 palabras.add(line);
             }
+        fis.close();
         } catch (IOException e) {
             // Error occurred when opening raw file for reading.
         }

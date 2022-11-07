@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         //se crea la partida
         partida = new Partida();
 
+        partida.cargarPalabrasTXT(this);
+        partida.elegirPalabraPartida();
+
         Bundle datos = getIntent().getExtras();
         if(datos!=null){
             partida.getPalabras().clear();
