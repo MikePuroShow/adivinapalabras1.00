@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView palabraSeleccionada;
@@ -42,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
         //se crea la partida
         partida = new Partida();
+
+        partida.guardarPalabrasTXT(this);
+        try {
+            partida.cargarPalabrasTXT(this);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         Bundle datos = getIntent().getExtras();
         if(datos!=null){

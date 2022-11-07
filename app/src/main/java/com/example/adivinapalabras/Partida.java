@@ -3,6 +3,15 @@ package com.example.adivinapalabras;
 import android.content.Context;
 import android.widget.EditText;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -123,6 +132,40 @@ public class Partida {
             }
         }
         return ganado;
+    }
+
+    public void guardarPalabrasTXT(Context contexto){
+        String nombreArchivo = "palabras.txt";
+        try (FileOutputStream fos = contexto.openFileOutput(nombreArchivo, Context.MODE_PRIVATE)) {
+            FileWriter fw = new FileWriter(nombreArchivo);
+            for (String palabra: palabras) {
+                fw.write(palabra);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+        }
+    }
+
+    public void cargarPalabrasTXT(Context contexto) throws FileNotFoundException {
+        String nombreArchivo = "palabras.txt";
+        FileInputStream fis = contexto.openFileInput(nombreArchivo);
+        InputStreamReader inputStreamReader =
+                new InputStreamReader(fis, StandardCharsets.UTF_8);
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            String line = reader.readLine();
+            while (line != null) {
+                stringBuilder.append(line).append('\n');
+                line = reader.readLine();
+                System.out.println("La linea es " + line);
+            }
+        } catch (IOException e) {
+            // Error occurred when opening raw file for reading.
+        } finally {
+            String contents = stringBuilder.toString();
+        }
+
     }
 
     //getters y setters
