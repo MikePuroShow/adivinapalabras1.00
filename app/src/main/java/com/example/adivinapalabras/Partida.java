@@ -11,12 +11,13 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Partida {
+public class Partida implements Serializable {
 
     private int intentos;//variable que gestiona los intentos actuales de la partida
     private ArrayList<String> palabras;
@@ -25,12 +26,12 @@ public class Partida {
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
 
-    public Partida() {
+    public Partida(ArrayList<String> pal) {
         //inicializacion arraylist palabras
-        palabras = new ArrayList<>();
+        palabras = pal;
         //cargarPalabras();
         //inicio primera partida
-        //elegirPalabraPartida();
+        elegirPalabraPartida();
     }
 
     /**
@@ -40,6 +41,26 @@ public class Partida {
         palabras.add("juego");
         palabras.add("agua");
         palabras.add("sol");
+    }
+
+    /**
+     * Metodo que descubre letras de la palabra, en funcion de la dificultad de la partida
+     * facil: 1/3 de las letras + 1
+     * Normal: 1/3 de las letras
+     * Dificil: 1/3 de las letras -1
+     */
+    public void descubrirLetras(){
+        int cantidadLetras = (palabraActual.length/2);
+        int i = 0;
+        while(i<cantidadLetras){
+            Random aleatorio = new Random();
+            int numAleatorio = aleatorio.nextInt(palabraActual.length);
+            System.out.println(aleatorio);
+            if(!posicionesAcertadas[numAleatorio]){
+                posicionesAcertadas[numAleatorio]=true;
+                i++;
+            }
+        }
     }
 
     /**
@@ -60,6 +81,7 @@ public class Partida {
         palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
+        descubrirLetras();
         intentos = (palabraActual.length / 2);//actualiza el valor de la partida que se va a jugar
         mostrarPalabraPartida();//se muestra la palabra seleccionada
 

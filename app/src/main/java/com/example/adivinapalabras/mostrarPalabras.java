@@ -29,7 +29,13 @@ public class mostrarPalabras extends AppCompatActivity {
         palabrasMostradas = new ArrayList<String>();
 
 
-        palabrasMostradas = getIntent().getStringArrayListExtra("palabras");
+        //palabrasMostradas = getIntent().getStringArrayListExtra("palabras");
+        Intent i = getIntent();
+        Partida p = (Partida) i.getSerializableExtra("partida");
+        if(p!=null){
+            palabrasMostradas = p.getPalabras();
+        }
+
 
 
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,palabrasMostradas);

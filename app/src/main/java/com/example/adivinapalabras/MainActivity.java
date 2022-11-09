@@ -17,9 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView palabrasDisponibles;
     private TextView palabraSeleccionada;
     private TextView intentosRestantes;
     private Button botonResolver;
@@ -41,12 +43,20 @@ public class MainActivity extends AppCompatActivity {
         botonResolver = findViewById(R.id.adivinar);
         letraElegida = findViewById(R.id.letra);
         otraPalabra = findViewById(R.id.nuevo);
+        palabrasDisponibles = findViewById(R.id.palabrasDisponibles);
+
+        ArrayList<String> palabrasInicio = new ArrayList<>();
+        palabrasInicio.add("juego");
+        palabrasInicio.add("agua");
+        palabrasInicio.add("sol");
 
         //se crea la partida
-        partida = new Partida();
+        partida = new Partida(palabrasInicio);
 
-        partida.cargarPalabrasTXT(this);
-        partida.elegirPalabraPartida();
+        actualizarPalabras();
+
+        //partida.cargarPalabrasTXT(this);
+        //partida.elegirPalabraPartida();
 
         //partida.guardarPalabrasTXT(this);
 
@@ -62,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         mostrarPalabra();
         calcularIntentos(partida.getIntentos());
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,6 +176,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Metodo para actualizar las palabras disponibles en la partida
+     */
+    public void actualizarPalabras(){
+        palabrasDisponibles.setText("Palabras disponibles: "+partida.getPalabras().size());
+    }
+
+    /**
      * Metodo para jugar otra partida con una palabra aleatoria
      *
      * @param vista boton que ejecuta el evento
@@ -198,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Introduce una palabra", Toast.LENGTH_LONG).show();
                 } else {
                     partida.cargarPalabrasUsuario(palabrasLeida);
+                    actualizarPalabras();
                 }
             }
         });
@@ -211,7 +228,8 @@ public class MainActivity extends AppCompatActivity {
     public void mostrarPalabrasPartida(){
         Intent i = new Intent(this,mostrarPalabras.class);
 
-        i.putExtra("palabras",partida.getPalabras());
+        //i.putExtra("palabras",partida.getPalabras());
+        i.putExtra("partida",partida);
 
         startActivity(i);
 
