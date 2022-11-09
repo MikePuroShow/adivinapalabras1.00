@@ -11,6 +11,12 @@
         android:id="@+id/menuMostrarPalabras"
         android:title="Mostrar palabras" />
     <item
+        android:id="@+id/menuImportarTXT"
+        android:title="Importar TXT" />
+    <item
+        android:id="@+id/menuExportarTXT"
+        android:title="Exportar TXT" />
+    <item
         android:id="@+id/menuSalirAplicacion"
         android:title="Salir" />
 </menu>

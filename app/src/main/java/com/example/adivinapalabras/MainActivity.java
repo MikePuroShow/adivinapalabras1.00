@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,12 +61,7 @@ public class MainActivity extends AppCompatActivity {
         //se crea la partida
         partida = new Partida(palabrasInicio);
 
-        actualizarPalabras();
 
-        //partida.cargarPalabrasTXT(this);
-        //partida.elegirPalabraPartida();
-
-        //partida.guardarPalabrasTXT(this);
 
         Bundle datos = getIntent().getExtras();
         if(datos!=null){
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             partida.setPalabras(datos.getStringArrayList("palabrasDevueltas"));
         }
 
+        actualizarPalabras();
 
         //se realizan acciones de la partida
         mostrarPalabra();
@@ -91,6 +95,15 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menuMostrarPalabras:
                 mostrarPalabrasPartida();
+                return true;
+            case R.id.menuImportarTXT:
+                partida.cargarPalabrasTXT(this);
+                actualizarPalabras();
+                Toast.makeText(this, "Palabras cargadas del fichero de texto", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuExportarTXT:
+                partida.guardarPalabrasTXT(this);
+                Toast.makeText(this, "Palabras exportadas al fichero de texto", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menuSalirAplicacion:
                 finish();

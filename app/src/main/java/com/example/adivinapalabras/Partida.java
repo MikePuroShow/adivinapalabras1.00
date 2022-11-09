@@ -37,7 +37,7 @@ public class Partida implements Serializable {
     /**
      * Metodo para cargar palabras desde java al programa
      */
-    public void cargarPalabras() {//todo revisar xk no se ven los 2 primeros
+    public void cargarPalabras() {
         palabras.add("juego");
         palabras.add("agua");
         palabras.add("sol");
@@ -161,6 +161,10 @@ public class Partida implements Serializable {
         return ganado;
     }
 
+    /**
+     * Metodo para guardar las palabras de la partida en un fichero de texto
+     * @param contexto contexto de main activity
+     */
     public void guardarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
         try (FileOutputStream fos = contexto.openFileOutput(nombreArchivo, Context.MODE_PRIVATE)) {
@@ -175,6 +179,10 @@ public class Partida implements Serializable {
         }
     }
 
+    /**
+     * Metodo para cargar las palabras de la partida desde un fichero de texto
+     * @param contexto contexto de main activity
+     */
     public void cargarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
         FileInputStream fis = null;
