@@ -20,8 +20,8 @@ public class mostrarPalabras extends AppCompatActivity {
     private ListView vista;
     List<Palabra> palabrasMostradas;
     Partida p;
-    String[]nombrePalabras;
-    String[]descripcionPalabras;
+    String[] nombrePalabras;
+    String[] descripcionPalabras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +32,11 @@ public class mostrarPalabras extends AppCompatActivity {
 
         palabrasMostradas = new ArrayList<>();
 
-
-        //palabrasMostradas = getIntent().getStringArrayListExtra("palabras");
         Intent i = getIntent();
-         p = (Partida) i.getSerializableExtra("partida");
-            palabrasMostradas = p.getPalabras();
-            nombrePalabras = new String[palabrasMostradas.size()];
-            descripcionPalabras = new String[palabrasMostradas.size()];
+        p = (Partida) i.getSerializableExtra("partida");
+        palabrasMostradas = p.getPalabras();
+        nombrePalabras = new String[palabrasMostradas.size()];
+        descripcionPalabras = new String[palabrasMostradas.size()];
 
         for (int j = 0; j < palabrasMostradas.size(); j++) {
             nombrePalabras[j] = palabrasMostradas.get(j).getNombrePalabra();
@@ -46,30 +44,20 @@ public class mostrarPalabras extends AppCompatActivity {
         }
 
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,nombrePalabras);
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, nombrePalabras);
         vista.setAdapter(adapter);
-
-        vista.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        vista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view,
-                                    int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String value = String.valueOf(palabrasMostradas.get(position).getNombrePalabra());
-                //Toast.makeText(getApplicationContext(),"funciona",Toast.LENGTH_SHORT).show();
-
-                Uri webpage = Uri.parse("https://www.wikipedia.org");
-                Intent intent = new Intent(Intent.ACTION_VIEW,webpage);
-                if(intent.resolveActivity(getPackageManager())!=null){
-                    startActivity(intent);
-                }
-
+                Toast.makeText(mostrarPalabras.this, palabrasMostradas.get(position).getDescripcion().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mostrarPalabras.this, descripcionPalabras[position].toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
-
     }
 
-    public void volverAtras(View vista){
+    public void volverAtras(View vista) {
         finish();
     }
 
