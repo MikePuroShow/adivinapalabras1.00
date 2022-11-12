@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Partida implements Parcelable {
+public class Partida implements Serializable {
 
     private int intentos;//variable que gestiona los intentos actuales de la partida
     private ArrayList<Palabra> palabras;
@@ -44,17 +44,7 @@ public class Partida implements Parcelable {
         posicion = in.readInt();
     }
 
-    public static final Creator<Partida> CREATOR = new Creator<Partida>() {
-        @Override
-        public Partida createFromParcel(Parcel in) {
-            return new Partida(in);
-        }
 
-        @Override
-        public Partida[] newArray(int size) {
-            return new Partida[size];
-        }
-    };
 
     /**
      * Metodo que descubre letras de la palabra, en funcion de la dificultad de la partida
@@ -252,13 +242,5 @@ public class Partida implements Parcelable {
         this.palabras = palabras;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeList(palabras);
-    }
 }

@@ -20,6 +20,8 @@ public class mostrarPalabras extends AppCompatActivity {
     private ListView vista;
     List<Palabra> palabrasMostradas;
     Partida p;
+    String[]nombrePalabras;
+    String[]descripcionPalabras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +35,18 @@ public class mostrarPalabras extends AppCompatActivity {
 
         //palabrasMostradas = getIntent().getStringArrayListExtra("palabras");
         Intent i = getIntent();
-         p = (Partida) i.getParcelableExtra("partida");
+         p = (Partida) i.getSerializableExtra("partida");
             palabrasMostradas = p.getPalabras();
+            nombrePalabras = new String[palabrasMostradas.size()];
+            descripcionPalabras = new String[palabrasMostradas.size()];
 
-
-        for (Palabra p:palabrasMostradas) {
-            System.out.println(p);
+        for (int j = 0; j < palabrasMostradas.size(); j++) {
+            nombrePalabras[j] = palabrasMostradas.get(j).getNombrePalabra();
+            descripcionPalabras[j] = palabrasMostradas.get(j).getDescripcion();
         }
-     /*   ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,palabrasMostradas);
+
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,nombrePalabras);
         vista.setAdapter(adapter);
 
         vista.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -58,7 +64,7 @@ public class mostrarPalabras extends AppCompatActivity {
                 }
 
             }
-        });*/
+        });
 
 
     }
