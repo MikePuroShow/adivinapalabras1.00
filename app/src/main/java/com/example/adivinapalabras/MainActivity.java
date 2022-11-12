@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean[] palabrasAcertadas;
     private char[] palabra;
     private boolean primeraEjecucion;
+    private ArrayList<Palabra> palabrasInicio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +55,11 @@ public class MainActivity extends AppCompatActivity {
         otraPalabra = findViewById(R.id.nuevo);
         palabrasDisponibles = findViewById(R.id.palabrasDisponibles);
 
-        ArrayList<String> palabrasInicio = new ArrayList<>();
-        palabrasInicio.add("juego");
-        palabrasInicio.add("agua");
-        palabrasInicio.add("sol");
+        palabrasInicio = new ArrayList<>();
 
+        cargaInicial();
         //se crea la partida
         partida = new Partida(palabrasInicio);
-
-
-
-        Bundle datos = getIntent().getExtras();
-        if(datos!=null){
-            partida.getPalabras().clear();
-
-            partida.setPalabras(datos.getStringArrayList("palabrasDevueltas"));
-        }
 
         actualizarPalabras();
 
@@ -97,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 mostrarPalabrasPartida();
                 return true;
             case R.id.menuImportarTXT:
-                partida.cargarPalabrasTXT(this);
+          //      partida.cargarPalabrasTXT(this);
                 actualizarPalabras();
                 Toast.makeText(this, "Palabras cargadas del fichero de texto", Toast.LENGTH_SHORT).show();
                 return true;
@@ -214,19 +205,25 @@ public class MainActivity extends AppCompatActivity {
      * Metodo para anadir palabras a la partida
      */
     public void anadirPalabras(){
+        LinearLayout layout = new LinearLayout(this);
         EditText palabrasIntroducidas = new EditText(this);
+        EditText palabrasDescripcion = new EditText(this);
         AlertDialog.Builder builderPalabras = new AlertDialog.Builder(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(palabrasIntroducidas);
+        layout.addView(palabrasDescripcion);
+        builderPalabras.setView(layout);
         builderPalabras.setTitle("Añadir palabra");
-        builderPalabras.setMessage("Introduzca la palabra que quiere añadir");
-        builderPalabras.setView(palabrasIntroducidas);
+        builderPalabras.setMessage("Introduzca la palabra que quiere añadir y su descripcion");
         builderPalabras.setPositiveButton("Añadir palabra", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String palabrasLeida = palabrasIntroducidas.getText().toString();
+                String palabraDescripcion = palabrasIntroducidas.getText().toString();
                 if (palabrasLeida.equals("")) {
                     Toast.makeText(MainActivity.this, "Introduce una palabra", Toast.LENGTH_LONG).show();
                 } else {
-                    partida.cargarPalabrasUsuario(palabrasLeida);
+                    partida.cargarPalabrasUsuario(new Palabra(palabrasLeida,palabraDescripcion));
                     actualizarPalabras();
                 }
             }
@@ -245,8 +242,13 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra("partida",partida);
 
         startActivity(i);
-
-
+    }
+    public void cargaInicial(){
+        String[]nombrePalabras = {"pantalla","cielo","ordenador"};
+        String[]descripcion = {"Dispositivo de salida que representa visualmente la información.","Espacio en el que se mueven los astros.","Maquina encargada de procesar datos."};
+        for (int i = 0; i < nombrePalabras.length; i++) {
+            palabrasInicio.add(new Palabra(nombrePalabras[i],descripcion[i]));
+        }
     }
 
 }

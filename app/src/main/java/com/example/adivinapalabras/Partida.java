@@ -1,6 +1,8 @@
 package com.example.adivinapalabras;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.EditText;
 
 import java.io.BufferedReader;
@@ -17,16 +19,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Partida implements Serializable {
+public class Partida implements Parcelable {
 
     private int intentos;//variable que gestiona los intentos actuales de la partida
-    private ArrayList<String> palabras;
+    private ArrayList<Palabra> palabras;
     private char[] palabraActual;
     private boolean[] posicionesAcertadas;
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
 
-    public Partida(ArrayList<String> pal) {
+    public Partida(ArrayList<Palabra> pal) {
         //inicializacion arraylist palabras
         palabras = pal;
         //cargarPalabras();
@@ -34,14 +36,25 @@ public class Partida implements Serializable {
         elegirPalabraPartida();
     }
 
-    /**
-     * Metodo para cargar palabras desde java al programa
-     */
-    public void cargarPalabras() {
-        palabras.add("juego");
-        palabras.add("agua");
-        palabras.add("sol");
+    protected Partida(Parcel in) {
+        intentos = in.readInt();
+        palabraActual = in.createCharArray();
+        posicionesAcertadas = in.createBooleanArray();
+        letra = (char) in.readInt();
+        posicion = in.readInt();
     }
+
+    public static final Creator<Partida> CREATOR = new Creator<Partida>() {
+        @Override
+        public Partida createFromParcel(Parcel in) {
+            return new Partida(in);
+        }
+
+        @Override
+        public Partida[] newArray(int size) {
+            return new Partida[size];
+        }
+    };
 
     /**
      * Metodo que descubre letras de la palabra, en funcion de la dificultad de la partida
@@ -68,7 +81,7 @@ public class Partida implements Serializable {
      *
      * @param palabrasUsuario array de cadena de caracteres introducido
      */
-    public void cargarPalabrasUsuario(String palabrasUsuario) {
+    public void cargarPalabrasUsuario(Palabra palabrasUsuario) {
         palabras.add(palabrasUsuario);
     }
 
@@ -78,17 +91,12 @@ public class Partida implements Serializable {
     public void elegirPalabraPartida() {
 
         posicion = (int) (Math.random() * palabras.size());//posicion palabra aleatoria
-        palabraActual = palabras.get(posicion).toCharArray();//array caracteres con la palabra
+        palabraActual = palabras.get(posicion).getNombrePalabra().toCharArray();//array caracteres con la palabra
         posicionesAcertadas = new boolean[palabraActual.length];//array de booleanos con el tamaño
         Arrays.fill(posicionesAcertadas, false);//array booleanos inicado a false, si hay persistencia no es necesario este metodo
         descubrirLetras();
         intentos = (palabraActual.length / 2);//actualiza el valor de la partida que se va a jugar
         mostrarPalabraPartida();//se muestra la palabra seleccionada
-
-
-        for(String palabra: palabras){
-            System.out.println(palabra);
-        }
     }
 
 
@@ -181,9 +189,9 @@ public class Partida implements Serializable {
 
     /**
      * Metodo para cargar las palabras de la partida desde un fichero de texto
-     * @param contexto contexto de main activity
+     *
      */
-    public void cargarPalabrasTXT(Context contexto) {
+  /*  public void cargarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
         FileInputStream fis = null;
 
@@ -205,7 +213,7 @@ public class Partida implements Serializable {
         } catch (IOException e) {
             // Error occurred when opening raw file for reading.
         }
-    }
+    }*/
 
     //getters y setters
     public int getIntentos() {
@@ -232,7 +240,7 @@ public class Partida implements Serializable {
         this.palabraActual = palabraActual;
     }
 
-    public ArrayList<String> getPalabras() {
+    public ArrayList<Palabra> getPalabras() {
         return palabras;
     }
 
@@ -240,8 +248,17 @@ public class Partida implements Serializable {
         return posicion;
     }
 
-    public void setPalabras(ArrayList<String> palabras) {
+    public void setPalabras(ArrayList<Palabra> palabras) {
         this.palabras = palabras;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeList(palabras);
+    }
 }
