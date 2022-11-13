@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,10 +24,12 @@ public class Partida implements Serializable {
 
     private int intentos;//variable que gestiona los intentos actuales de la partida
     private ArrayList<Palabra> palabras;
+    private ArrayList<Palabra> palabrasNuevas;
     private char[] palabraActual;
     private boolean[] posicionesAcertadas;
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
+
 
     public Partida(ArrayList<Palabra> pal) {
         //inicializacion arraylist palabras
@@ -36,13 +39,7 @@ public class Partida implements Serializable {
         elegirPalabraPartida();
     }
 
-    protected Partida(Parcel in) {
-        intentos = in.readInt();
-        palabraActual = in.createCharArray();
-        posicionesAcertadas = in.createBooleanArray();
-        letra = (char) in.readInt();
-        posicion = in.readInt();
-    }
+
 
 
 
@@ -158,17 +155,25 @@ public class Partida implements Serializable {
         }
         return ganado;
     }
-
+    public void palabrasNuevasFicheroTXT(){
+        palabrasNuevas = (ArrayList<Palabra>) palabras.clone();
+        palabrasNuevas.add(new Palabra("mascarilla","es un dispositivo diseñado para proteger, al portador, de la inhalación de sustancias peligrosas"));
+        palabrasNuevas.add(new Palabra("cojin","es una especie de almohada cuadrada y ornamentada rellena con lana"));
+        palabrasNuevas.add(new Palabra("gorra","es un accesorio diseñado y creado para cubrir la cabeza y proteger los ojos de la luz natural"));
+        palabrasNuevas.add(new Palabra("patinete"," es un vehículo/juguete que consiste en una plataforma alargada sobre dos ruedas en línea y una barra de dirección"));
+    }
     /**
      * Metodo para guardar las palabras de la partida en un fichero de texto
      * @param contexto contexto de main activity
      */
     public void guardarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
+        palabrasNuevasFicheroTXT();
         try (FileOutputStream fos = contexto.openFileOutput(nombreArchivo, Context.MODE_PRIVATE)) {
             FileWriter fw = new FileWriter(fos.getFD());
-            for (int i = 0; i < palabras.size(); i++) {
-                fw.write(palabras.get(i) + "\n");
+            for (int i = 0; i < palabrasNuevas.size(); i++) {
+            //    fw.write(palabras.get(i).getNombrePalabra() + "," + palabras.get(i).getDescripcion() + "\n");
+                fw.write(palabrasNuevas.get(i).getNombrePalabra() + "," + palabrasNuevas.get(i).getDescripcion() + "\n");
             }
             fw.close();
         } catch (FileNotFoundException e) {
@@ -181,29 +186,35 @@ public class Partida implements Serializable {
      * Metodo para cargar las palabras de la partida desde un fichero de texto
      *
      */
-  /*  public void cargarPalabrasTXT(Context contexto) {
+    public void cargarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
         FileInputStream fis = null;
-
         try {
             fis = contexto.openFileInput(nombreArchivo);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-        try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
-            String line = reader.readLine();
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            BufferedReader reader = new BufferedReader(inputStreamReader);
             palabras.clear();
-            while (line != null) {
-                palabras.add(line);
-                line = reader.readLine();
-            }
-        fis.close();
-        } catch (IOException e) {
-            // Error occurred when opening raw file for reading.
+                String line = reader.readLine();
+                while (line != null) {
+                    String[] palabrasRecibidas = line.split(",");
+                    palabras.add(new Palabra(palabrasRecibidas[0], palabrasRecibidas[1]));
+                    line = reader.readLine();
+                }
+                fis.close();
+                Toast.makeText(contexto, "Palabras cargadas del fichero de texto", Toast.LENGTH_SHORT).show();
+
+
+        }catch (NullPointerException npe){
+            Toast.makeText(contexto, "No existe ningun fichero", Toast.LENGTH_SHORT).show();
+        }catch (IOException e) {
+            e.printStackTrace();
         }
-    }*/
+
+    }
 
     //getters y setters
     public int getIntentos() {

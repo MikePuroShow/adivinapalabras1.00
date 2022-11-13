@@ -50,7 +50,7 @@ public class mostrarPalabras extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String value = String.valueOf(palabrasMostradas.get(position).getNombrePalabra());
-                Toast.makeText(mostrarPalabras.this, palabrasMostradas.get(position).getDescripcion().toString(), Toast.LENGTH_SHORT).show();
+             // Toast.makeText(mostrarPalabras.this, palabrasMostradas.get(position).getDescripcion().toString(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(mostrarPalabras.this, descripcionPalabras[position].toString(), Toast.LENGTH_SHORT).show();
             }
         });

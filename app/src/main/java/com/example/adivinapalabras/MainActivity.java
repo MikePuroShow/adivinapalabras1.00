@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView palabrasDisponibles;
     private TextView palabraSeleccionada;
     private TextView intentosRestantes;
+    private TextView descripcionPalabra;
     private Button botonResolver;
     private EditText letraElegida;
     private Button otraPalabra;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private char[] palabra;
     private boolean primeraEjecucion;
     private ArrayList<Palabra> palabrasInicio;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         letraElegida = findViewById(R.id.letra);
         otraPalabra = findViewById(R.id.nuevo);
         palabrasDisponibles = findViewById(R.id.palabrasDisponibles);
-
+        descripcionPalabra = findViewById(R.id.descripcionPalabra);
         palabrasInicio = new ArrayList<>();
 
         cargaInicial();
@@ -65,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
         //se realizan acciones de la partida
         mostrarPalabra();
+        mostrarDescripcion();
         calcularIntentos(partida.getIntentos());
+
     }
 
     @Override
@@ -88,9 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 mostrarPalabrasPartida();
                 return true;
             case R.id.menuImportarTXT:
-          //      partida.cargarPalabrasTXT(this);
+                partida.cargarPalabrasTXT(this);
                 actualizarPalabras();
-                Toast.makeText(this, "Palabras cargadas del fichero de texto", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menuExportarTXT:
                 partida.guardarPalabrasTXT(this);
@@ -130,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
             //se muestra la palabra en su estado actual tras elegir letra
             mostrarPalabra();
+            mostrarDescripcion();
 
             //se comprueba si se ha ganado o se ha perdido la partida
             comprobar();
@@ -185,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
     public void actualizarPalabras(){
         palabrasDisponibles.setText("Palabras disponibles: "+partida.getPalabras().size());
     }
+    public void mostrarDescripcion(){
+        descripcionPalabra.setText(partida.getPalabras().get(partida.getPosicion()).getDescripcion());
+    }
 
     /**
      * Metodo para jugar otra partida con una palabra aleatoria
@@ -197,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         }
         partida.elegirPalabraPartida();
         mostrarPalabra();
+        mostrarDescripcion();
         calcularIntentos(partida.getIntentos());
     }
 
@@ -243,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(i);
     }
+
     public void cargaInicial(){
         String[]nombrePalabras = {"pantalla","cielo","ordenador"};
         String[]descripcion = {"Dispositivo de salida que representa visualmente la información.","Espacio en el que se mueven los astros.","Maquina encargada de procesar datos."};
