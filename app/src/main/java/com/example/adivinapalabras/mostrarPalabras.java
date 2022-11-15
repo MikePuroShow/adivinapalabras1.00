@@ -62,15 +62,16 @@ public class mostrarPalabras extends AppCompatActivity {
                 // Toast.makeText(mostrarPalabras.this, descripcionPalabras[position].toString(), Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
                 i.putExtra("partida", p);
+                i.putExtra("booleano",false);
                 i.putExtra("posicion", position);
                 startActivity(i);
             }
         });
-
     }
     public void AdministrarSQ(View vista){
         Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
         i.putExtra("partida", p);
+        i.putExtra("booleano",true);
         startActivity(i);
     }
 }

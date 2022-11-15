@@ -21,15 +21,20 @@ int position=0;
         setContentView(R.layout.formulario);
         nombre=findViewById(R.id.nombrePalabra);
         descripcion=findViewById(R.id.descripcionText);
-
         /**RECOGER PARITDA DE LA OTRA ACTIVIDAD**/
         Bundle datos = getIntent().getExtras(); //BUNDLE
-         p = (Partida) datos.getSerializable("partida"); //RECOGER PARTIDA
-         position = datos.getInt("posicion");
+        p = (Partida) datos.getSerializable("partida"); //RECOGER PARTIDA
+        position = datos.getInt("posicion");
         p.getPalabras().get(position);
         nombre.setText(p.getPalabras().get(position).getNombrePalabra());
         descripcion.setText(p.getPalabras().get(position).getDescripcion());
-        System.out.println(position);
+        boolean booleano = datos.getBoolean("booleano");
+        if(booleano){
+            nombre.setText("");
+            descripcion.setText("");
+        }
+
+
     }
     public void borrar(View vista){
         String palabra = nombre.getText().toString();
@@ -38,6 +43,9 @@ int position=0;
                 p.getPalabras().remove(i);
                 Toast.makeText(this, "La palabra: "+palabra+" ha sido eliminada del array", Toast.LENGTH_SHORT).show();
             }
+            nombre.setText("");
+            descripcion.setText("");
+
         }
     }
     public void anadir (View vista){
