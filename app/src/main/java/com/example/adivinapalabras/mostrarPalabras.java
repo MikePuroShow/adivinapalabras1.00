@@ -1,16 +1,14 @@
 package com.example.adivinapalabras;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,32 +31,47 @@ public class mostrarPalabras extends AppCompatActivity {
         palabrasMostradas = new ArrayList<>();
 
         Intent i = getIntent();
-        p = (Partida) i.getSerializableExtra("partida");
+       p = (Partida) i.getSerializableExtra("partida");
         palabrasMostradas = p.getPalabras();
         nombrePalabras = new String[palabrasMostradas.size()];
         descripcionPalabras = new String[palabrasMostradas.size()];
-
-        for (int j = 0; j < palabrasMostradas.size(); j++) {
-            nombrePalabras[j] = palabrasMostradas.get(j).getNombrePalabra();
-            descripcionPalabras[j] = palabrasMostradas.get(j).getDescripcion();
+            for (int j = 0; j < palabrasMostradas.size(); j++) {
+                nombrePalabras[j] = palabrasMostradas.get(j).getNombrePalabra();
+                descripcionPalabras[j] = palabrasMostradas.get(j).getDescripcion();
         }
+            crearListView();
 
 
+
+    }
+
+
+    public void volverAtras(View vista) {
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("partida",p);
+        startActivity(i);
+    }
+    public void crearListView(){
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, nombrePalabras);
         vista.setAdapter(adapter);
         vista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String value = String.valueOf(palabrasMostradas.get(position).getNombrePalabra());
-             // Toast.makeText(mostrarPalabras.this, palabrasMostradas.get(position).getDescripcion().toString(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(mostrarPalabras.this, descripcionPalabras[position].toString(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(mostrarPalabras.this, palabrasMostradas.get(position).getDescripcion().toString(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(mostrarPalabras.this, descripcionPalabras[position].toString(), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
+                i.putExtra("partida", p);
+                i.putExtra("posicion", position);
+                startActivity(i);
             }
         });
 
     }
-
-    public void volverAtras(View vista) {
-        finish();
+    public void AdministrarSQ(View vista){
+        Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
+        i.putExtra("partida", p);
+        startActivity(i);
     }
-
 }
+

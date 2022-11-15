@@ -55,7 +55,7 @@ public class Partida implements Serializable {
         while(i<cantidadLetras){
             Random aleatorio = new Random();
             int numAleatorio = aleatorio.nextInt(palabraActual.length);
-            System.out.println(aleatorio);
+            //System.out.println(aleatorio);
             if(!posicionesAcertadas[numAleatorio]){
                 posicionesAcertadas[numAleatorio]=true;
                 i++;

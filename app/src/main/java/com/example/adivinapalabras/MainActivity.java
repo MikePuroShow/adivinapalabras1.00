@@ -59,16 +59,34 @@ public class MainActivity extends AppCompatActivity {
         descripcionPalabra = findViewById(R.id.descripcionPalabra);
         palabrasInicio = new ArrayList<>();
 
-        cargaInicial();
-        //se crea la partida
-        partida = new Partida(palabrasInicio);
+        Intent i = getIntent();
+        partida = (Partida) i.getSerializableExtra("partida");
+        if(partida==null){
+            cargaInicial(); //Se le añaden descripciones y palabras al array del MAIN ACTIVITY
+            //se crea la partida
+            partida = new Partida(palabrasInicio);
 
-        actualizarPalabras();
+            actualizarPalabras(); //Contador de palabras
 
-        //se realizan acciones de la partida
-        mostrarPalabra();
-        mostrarDescripcion();
-        calcularIntentos(partida.getIntentos());
+            //se realizan acciones de la partida
+            mostrarPalabra(); //se muestran guiones y algunas letras
+            mostrarDescripcion(); //descripcion
+            calcularIntentos(partida.getIntentos()); //intentos.
+        }else{
+            try{
+                actualizarPalabras();
+                mostrarPalabra();
+                mostrarDescripcion();
+                calcularIntentos(partida.getIntentos());
+            }catch (IndexOutOfBoundsException e){
+              otraPartida(null);
+            }
+
+        }
+
+
+
+
 
     }
 
@@ -83,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuVerPalabra:
-                Toast.makeText(this,"La palabra actual es: "+partida.getPalabras().get(partida.getPosicion()), Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"La palabra actual es: "+partida.getPalabras().get(partida.getPosicion()).getNombrePalabra(), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.menuAnadirPalabras:
                 anadirPalabras();
