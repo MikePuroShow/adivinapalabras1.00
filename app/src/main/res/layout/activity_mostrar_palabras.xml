@@ -45,4 +45,15 @@
         app:layout_constraintStart_toEndOf="@+id/botonVolver"
         app:layout_constraintTop_toBottomOf="@+id/listViewPalabras"
         app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/botonBorrarTodo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="45dp"
+        android:onClick="borrarTodo"
+        android:text="Borrar Todo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/botonVolver" />
 </androidx.constraintlayout.widget.ConstraintLayout>

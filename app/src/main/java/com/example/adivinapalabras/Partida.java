@@ -1,10 +1,16 @@
 package com.example.adivinapalabras;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Partida implements Serializable {
+public class Partida extends AppCompatActivity implements Serializable {
 
     private int intentos;//variable que gestiona los intentos actuales de la partida
     private ArrayList<Palabra> palabras;
@@ -29,6 +35,7 @@ public class Partida implements Serializable {
     private boolean[] posicionesAcertadas;
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
+
 
 
     public Partida(ArrayList<Palabra> pal) {
@@ -181,6 +188,27 @@ public class Partida implements Serializable {
         } catch (IOException e) {
         }
     }
+    public void importarPalabrasSQL(Context context){
+        baseDatosHelper mdHelper = new baseDatosHelper(context);
+        SQLiteDatabase db = mdHelper.getReadableDatabase();
+        //db.rawQuery("select * from " + LawyerEntry.TABLE_NAME, null); //TODO consulta optativa
+        Cursor cursor = db.query(
+                estructuraBaseDeDatos.TABLE_NAME,   // The table to query
+                null,             // The array of columns to return (pass null to get all)
+                null,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null              // The sort order
+        );
+        palabras.clear();
+            while (cursor.moveToNext()){
+                    String nombrePal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Nombre_Palabra));
+                    String descripPal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Descripcion_Palabra));
+                 palabras.add(new Palabra(nombrePal,descripPal));
+            }
+            cursor.close();
+    }
 
     /**
      * Metodo para cargar las palabras de la partida desde un fichero de texto
@@ -254,4 +282,15 @@ public class Partida implements Serializable {
     }
 
 
+    public void exportarPalabrasSQL(Context context) {
+        baseDatosHelper mdHelper = new baseDatosHelper(context);
+        SQLiteDatabase db = mdHelper.getReadableDatabase();
+        ContentValues values = new ContentValues();
+        for(Palabra pa: palabras){
+            values.put(estructuraBaseDeDatos.Nombre_Palabra, pa.getNombrePalabra());
+            values.put(estructuraBaseDeDatos.Descripcion_Palabra, pa.getDescripcion());
+            long newRowId = db.insert(estructuraBaseDeDatos.TABLE_NAME, null, values);
+
+        }
+    }
 }

@@ -1,13 +1,9 @@
 package com.example.adivinapalabras;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,17 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Serializable {
 
     private TextView palabrasDisponibles;
     private TextView palabraSeleccionada;
@@ -61,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         partida = (Partida) i.getSerializableExtra("partida");
-        if(partida==null){
+        if (partida == null) {
             cargaInicial(); //Se le añaden descripciones y palabras al array del MAIN ACTIVITY
             //se crea la partida
             partida = new Partida(palabrasInicio);
@@ -72,20 +66,17 @@ public class MainActivity extends AppCompatActivity {
             mostrarPalabra(); //se muestran guiones y algunas letras
             mostrarDescripcion(); //descripcion
             calcularIntentos(partida.getIntentos()); //intentos.
-        }else{
-            try{
+        } else {
+            try {
                 actualizarPalabras();
                 mostrarPalabra();
                 mostrarDescripcion();
                 calcularIntentos(partida.getIntentos());
-            }catch (IndexOutOfBoundsException e){
-              otraPartida(null);
+            } catch (IndexOutOfBoundsException e) {
+                otraPartida(null);
             }
 
         }
-
-
-
 
 
     }
@@ -101,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuVerPalabra:
-                Toast.makeText(this,"La palabra actual es: "+partida.getPalabras().get(partida.getPosicion()).getNombrePalabra(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "La palabra actual es: " + partida.getPalabras().get(partida.getPosicion()).getNombrePalabra(), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.menuAnadirPalabras:
                 anadirPalabras();
@@ -116,6 +107,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuExportarTXT:
                 partida.guardarPalabrasTXT(this);
                 Toast.makeText(this, "Palabras exportadas al fichero de texto", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuExportarSQL:
+                partida.exportarPalabrasSQL(this);
+                Toast.makeText(this, "Palabras exportadas a la base de datos", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuImportarSQL:
+                partida.importarPalabrasSQL(this);
+                Toast.makeText(this, "Palabras importadas desde la base de datos", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menuSalirAplicacion:
                 finish();
@@ -138,23 +137,25 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton adivinar
      */
     public void resolver(View vista) {
-        String cadena = partida.resolverPartida(letraElegida);
-        if (cadena.equals("")) {//si no se ha elegido ninguna letra
-            Toast.makeText(this, "No has introducido ninguna letra", Toast.LENGTH_LONG).show();
+        if (partida.getPalabras().size() == 0) { //PARA EL BORRAR TO DO
+            Toast.makeText(this, "No hay palabras para jugar", Toast.LENGTH_SHORT).show();
         } else {
-            letraElegida.setText("");//se ayuda al usuario a que no tenga que borrar la letra para escribir otra
+            String cadena = partida.resolverPartida(letraElegida);
+            if (cadena.equals("")) {//si no se ha elegido ninguna letra
+                Toast.makeText(this, "No has introducido ninguna letra", Toast.LENGTH_LONG).show();
+            } else {
+                letraElegida.setText("");//se ayuda al usuario a que no tenga que borrar la letra para escribir otra
 
-            if (!partida.acertado()) {//solo se ejecutara si no se ha acertado letra
-                Toast.makeText(this, "Has fallado", Toast.LENGTH_LONG).show();
-                calcularIntentos(partida.getIntentos());
+                if (!partida.acertado()) {//solo se ejecutara si no se ha acertado letra
+                    Toast.makeText(this, "Has fallado", Toast.LENGTH_LONG).show();
+                    calcularIntentos(partida.getIntentos());
+                }
+                //se muestra la palabra en su estado actual tras elegir letra
+                mostrarPalabra();
+                mostrarDescripcion();
+                //se comprueba si se ha ganado o se ha perdido la partida
+                comprobar();
             }
-
-            //se muestra la palabra en su estado actual tras elegir letra
-            mostrarPalabra();
-            mostrarDescripcion();
-
-            //se comprueba si se ha ganado o se ha perdido la partida
-            comprobar();
         }
     }
 
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
      * Metodo para comprobar si se ha ganado o si se ha perdido la partida
      */
     public void comprobar() {
-        if (partida.getIntentos()==0) {
+        if (partida.getIntentos() == 0) {
             botonResolver.setEnabled(false);//deshabilita el boton al perder
             mostrarDialogo("Has perdido");
         } else {
@@ -204,10 +205,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Metodo para actualizar las palabras disponibles en la partida
      */
-    public void actualizarPalabras(){
-        palabrasDisponibles.setText("Palabras disponibles: "+partida.getPalabras().size());
+    public void actualizarPalabras() {
+        palabrasDisponibles.setText("Palabras disponibles: " + partida.getPalabras().size());
     }
-    public void mostrarDescripcion(){
+
+    public void mostrarDescripcion() {
         descripcionPalabra.setText(partida.getPalabras().get(partida.getPosicion()).getDescripcion());
     }
 
@@ -217,20 +219,25 @@ public class MainActivity extends AppCompatActivity {
      * @param vista boton que ejecuta el evento
      */
     public void otraPartida(View vista) {
-        if (!botonResolver.isEnabled()){
+        if (!botonResolver.isEnabled()) {
             botonResolver.setEnabled(true);//habilita el boton al empezar una partida si estaba deshabilitado
         }
-        partida.elegirPalabraPartida();
-        mostrarPalabra();
-        mostrarDescripcion();
-        calcularIntentos(partida.getIntentos());
+        if (partida.getPalabras().size() == 0) {
+            Toast.makeText(this, "NO HAY PALABRAS PARA JUGAR", Toast.LENGTH_LONG);
+            palabraSeleccionada.setText("");
+        } else {
+            partida.elegirPalabraPartida();
+            mostrarPalabra();
+            mostrarDescripcion();
+            calcularIntentos(partida.getIntentos());
+        }
     }
 
 
     /**
      * Metodo para anadir palabras a la partida
      */
-    public void anadirPalabras(){
+    public void anadirPalabras() {
         LinearLayout layout = new LinearLayout(this);
         EditText palabrasIntroducidas = new EditText(this);
         EditText palabrasDescripcion = new EditText(this);
@@ -249,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                 if (palabrasLeida.equals("")) {
                     Toast.makeText(MainActivity.this, "Introduce una palabra", Toast.LENGTH_LONG).show();
                 } else {
-                    partida.cargarPalabrasUsuario(new Palabra(palabrasLeida,palabraDescripcion));
+                    partida.cargarPalabrasUsuario(new Palabra(palabrasLeida, palabraDescripcion));
                     actualizarPalabras();
                 }
             }
@@ -261,20 +268,23 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Metodo para mostrar las palabras de la partida en un list view
      */
-    public void mostrarPalabrasPartida(){
-        Intent i = new Intent(this,mostrarPalabras.class);
+    public void mostrarPalabrasPartida() {
+        Intent i = new Intent(this, mostrarPalabras.class);
 
         //i.putExtra("palabras",partida.getPalabras());
-        i.putExtra("partida",partida);
+        i.putExtra("partida", partida);
+            startActivity(i);
 
-        startActivity(i);
+
+
+
     }
 
-    public void cargaInicial(){
-        String[]nombrePalabras = {"pantalla","cielo","ordenador"};
-        String[]descripcion = {"Dispositivo de salida que representa visualmente la información.","Espacio en el que se mueven los astros.","Maquina encargada de procesar datos."};
+    public void cargaInicial() {
+        String[] nombrePalabras = {"pantalla", "cielo", "ordenador"};
+        String[] descripcion = {"Dispositivo de salida que representa visualmente la información.", "Espacio en el que se mueven los astros.", "Maquina encargada de procesar datos."};
         for (int i = 0; i < nombrePalabras.length; i++) {
-            palabrasInicio.add(new Palabra(nombrePalabras[i],descripcion[i]));
+            palabrasInicio.add(new Palabra(nombrePalabras[i], descripcion[i]));
         }
     }
 

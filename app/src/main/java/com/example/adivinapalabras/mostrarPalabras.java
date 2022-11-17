@@ -10,10 +10,11 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class mostrarPalabras extends AppCompatActivity {
+public class mostrarPalabras extends AppCompatActivity implements Serializable {
 
     private ListView vista;
     List<Palabra> palabrasMostradas;
@@ -72,6 +73,12 @@ public class mostrarPalabras extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
         i.putExtra("partida", p);
         i.putExtra("booleano",true);
+        startActivity(i);
+    }
+    public void borrarTodo(View vista){
+       palabrasMostradas.clear();
+        Intent i = new Intent(getApplicationContext(), mostrarPalabras.class);
+        i.putExtra("partida", p);
         startActivity(i);
     }
 }
