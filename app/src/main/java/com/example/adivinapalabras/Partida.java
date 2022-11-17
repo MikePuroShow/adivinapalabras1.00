@@ -290,7 +290,6 @@ public class Partida extends AppCompatActivity implements Serializable {
             values.put(estructuraBaseDeDatos.Nombre_Palabra, pa.getNombrePalabra());
             values.put(estructuraBaseDeDatos.Descripcion_Palabra, pa.getDescripcion());
             long newRowId = db.insert(estructuraBaseDeDatos.TABLE_NAME, null, values);
-
         }
     }
 }
