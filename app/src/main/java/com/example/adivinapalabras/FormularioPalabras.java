@@ -74,6 +74,8 @@ public class FormularioPalabras extends AppCompatActivity implements Serializabl
             if (descripcionvariable.equals("")) {
                 p.getPalabras().add(new Palabra(nombrevariable, "SIN DESCRIPCION"));
                 Toast.makeText(this, "INSERCCION REALIZADA CON EXITO", Toast.LENGTH_LONG).show();
+                nombre.setText("");
+                descripcion.setText("");
             } else {
                 p.getPalabras().add(new Palabra(nombrevariable, descripcionvariable));
                 Toast.makeText(this, "INSERCCION REALIZADA CON EXITO", Toast.LENGTH_LONG).show();

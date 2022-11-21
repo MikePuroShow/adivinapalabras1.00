@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -35,7 +37,6 @@ public class Partida extends AppCompatActivity implements Serializable {
     private boolean[] posicionesAcertadas;
     private char letra;
     private int posicion;//posicion en el array list de la palabra con la que se esta jugando
-
 
 
     public Partida(ArrayList<Palabra> pal) {
@@ -163,7 +164,7 @@ public class Partida extends AppCompatActivity implements Serializable {
         return ganado;
     }
     public void palabrasNuevasFicheroTXT(){
-        palabrasNuevas = (ArrayList<Palabra>) palabras.clone();
+       palabrasNuevas = (ArrayList<Palabra>) palabras.clone();
         palabrasNuevas.add(new Palabra("mascarilla","es un dispositivo diseñado para proteger, al portador, de la inhalación de sustancias peligrosas"));
         palabrasNuevas.add(new Palabra("cojin","es una especie de almohada cuadrada y ornamentada rellena con lana"));
         palabrasNuevas.add(new Palabra("gorra","es un accesorio diseñado y creado para cubrir la cabeza y proteger los ojos de la luz natural"));
@@ -201,11 +202,14 @@ public class Partida extends AppCompatActivity implements Serializable {
                 null,                   // don't filter by row groups
                 null              // The sort order
         );
-        palabras.clear();
+      // palabras.clear();
             while (cursor.moveToNext()){
                     String nombrePal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Nombre_Palabra));
                     String descripPal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Descripcion_Palabra));
                  palabras.add(new Palabra(nombrePal,descripPal));
+            }
+            if(palabras.size()==0){
+                Toast.makeText(this,"No se han importado palabra ya que la BD esta vacia",Toast.LENGTH_LONG).show();
             }
             cursor.close();
     }
@@ -283,6 +287,7 @@ public class Partida extends AppCompatActivity implements Serializable {
 
 
     public void exportarPalabrasSQL(Context context) {
+
         baseDatosHelper mdHelper = new baseDatosHelper(context);
         SQLiteDatabase db = mdHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
@@ -291,5 +296,47 @@ public class Partida extends AppCompatActivity implements Serializable {
             values.put(estructuraBaseDeDatos.Descripcion_Palabra, pa.getDescripcion());
             long newRowId = db.insert(estructuraBaseDeDatos.TABLE_NAME, null, values);
         }
+    }
+
+    public void exportarObjetos(Context contexto) {
+        FileOutputStream fos=null;
+        try {
+            palabrasNuevasFicheroTXT();
+            fos = contexto.openFileOutput("palabras1.dat",Context.MODE_PRIVATE | Context.MODE_APPEND);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            for (Palabra p: this.palabras){
+                oos.writeObject(p);
+            }
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importarObjetos(Context contexto) {
+        try {
+            FileInputStream fis;
+            fis = contexto.openFileInput("palabras1.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Palabra aux = (Palabra) ois.readObject();
+            if(aux==null){
+                Toast.makeText(this,"No hay palabras en el fichero de OBJETOS",Toast.LENGTH_LONG).show();
+            }
+            while (aux!=null)
+            {
+                if (aux instanceof Palabra){
+                    palabras.add((Palabra) aux);
+                    aux =(Palabra) ois.readObject();
+                }
+            }
+            ois.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public void exportarXML(Context context){
+
     }
 }

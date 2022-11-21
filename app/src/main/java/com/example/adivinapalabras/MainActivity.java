@@ -114,10 +114,20 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 return true;
             case R.id.menuImportarSQL:
                 partida.importarPalabrasSQL(this);
+                actualizarPalabras();
                 Toast.makeText(this, "Palabras importadas desde la base de datos", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.exportarobjetos:
+                partida.exportarObjetos(this);
+                Toast.makeText(this, "Palabras  exportadas al fichero de objetos", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.importarObjetos:
+                partida.importarObjetos(this);
+                actualizarPalabras();
+                Toast.makeText(this, "Palabras  importadas desde el fichero de objetos", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.menuSalirAplicacion:
-                finish();
+                System.exit(0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -199,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
      * @param intentosActualizados intentosActualizados a mostrar
      */
     public void calcularIntentos(int intentosActualizados) {
-        intentosRestantes.setText(String.valueOf(intentosActualizados));
+        intentosRestantes.setText("Intentos "+ String.valueOf(intentosActualizados));
     }
 
     /**
