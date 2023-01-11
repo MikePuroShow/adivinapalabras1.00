@@ -6,20 +6,36 @@
     android:layout_height="match_parent"
     android:background="#A2C7E4">
 
+    <TextView
+        android:id="@+id/labelMongoDB3"
+        android:layout_width="93dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="155dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="136dp"
+        android:text="SQLITE"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/borrarArray" />
+
     <EditText
-        android:id="@+id/nombrePalabra"
+        android:id="@+id/nombrePalabraMYSQL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.545"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/descripcionText"
+        android:id="@+id/descripcionmysql"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="47dp"
@@ -28,8 +44,8 @@
         android:inputType="textPersonName"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/añadirArray"
-        app:layout_constraintStart_toStartOf="@+id/nombrePalabra"
-        app:layout_constraintTop_toBottomOf="@+id/nombrePalabra" />
+        app:layout_constraintStart_toStartOf="@+id/nombrePalabraMYSQL"
+        app:layout_constraintTop_toBottomOf="@+id/nombrePalabraMYSQL" />
 
     <Button
         android:id="@+id/añadirArray"
@@ -45,7 +61,7 @@
         app:layout_constraintEnd_toStartOf="@+id/borrarArray"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descripcionText" />
+        app:layout_constraintTop_toBottomOf="@+id/descripcionmysql" />
 
     <Button
         android:id="@+id/borrarArray"
@@ -57,10 +73,10 @@
         android:text="-"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/labelSq"
+        app:layout_constraintBottom_toTopOf="@+id/labelMYSQL"
         app:layout_constraintEnd_toStartOf="@+id/resetearArray"
         app:layout_constraintStart_toEndOf="@+id/añadirArray"
-        app:layout_constraintTop_toBottomOf="@+id/descripcionText" />
+        app:layout_constraintTop_toBottomOf="@+id/descripcionmysql" />
 
     <Button
         android:id="@+id/resetearArray"
@@ -74,10 +90,10 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/borrarArray"
-        app:layout_constraintTop_toBottomOf="@+id/descripcionText" />
+        app:layout_constraintTop_toBottomOf="@+id/descripcionmysql" />
 
     <TextView
-        android:id="@+id/labelSq"
+        android:id="@+id/labelMYSQL"
         android:layout_width="93dp"
         android:layout_height="31dp"
         android:layout_marginStart="155dp"
@@ -92,7 +108,7 @@
         app:layout_constraintTop_toBottomOf="@+id/borrarArray" />
 
     <Button
-        android:id="@+id/button10"
+        android:id="@+id/btnInsertarMYSQL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="31dp"
@@ -102,10 +118,10 @@
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labelSq" />
+        app:layout_constraintTop_toBottomOf="@+id/labelMYSQL" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btnEliminarMYSQL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -113,8 +129,8 @@
         android:text="-"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/button10"
-        app:layout_constraintTop_toBottomOf="@+id/button10" />
+        app:layout_constraintStart_toStartOf="@+id/btnInsertarMYSQL"
+        app:layout_constraintTop_toBottomOf="@+id/btnInsertarMYSQL" />
 
     <Button
         android:id="@+id/button6"
@@ -126,11 +142,11 @@
         android:text="R"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/button10"
+        app:layout_constraintStart_toEndOf="@+id/btnInsertarMYSQL"
         app:layout_constraintTop_toBottomOf="@+id/resetearArray" />
 
     <Button
-        android:id="@+id/button7"
+        android:id="@+id/btnBuscarMYSQL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="161dp"
@@ -138,7 +154,7 @@
         android:text="B"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/button5"
+        app:layout_constraintStart_toEndOf="@+id/btnEliminarMYSQL"
         app:layout_constraintTop_toBottomOf="@+id/button6" />
 
     <Button
@@ -147,11 +163,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="153dp"
         android:layout_marginEnd="141dp"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="40dp"
         android:onClick="volver"
         android:text="VOLVER"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.269"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -174,5 +191,5 @@
         android:text="Descripción:"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombrePalabra" />
+        app:layout_constraintTop_toBottomOf="@+id/nombrePalabraMYSQL" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,12 +49,23 @@
 
     <Button
         android:id="@+id/botonBorrarTodo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="45dp"
+        android:layout_width="129dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="23dp"
         android:onClick="borrarTodo"
         android:text="Borrar Todo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/botonVolver" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/botonVolver" />
+
+    <Button
+        android:id="@+id/botonmongodb"
+        android:layout_width="189dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="23dp"
+        android:onClick="AdministrarMongoDB"
+        android:text="ADMINISTRAR MONGODB"
+        app:layout_constraintStart_toEndOf="@+id/botonBorrarTodo"
+        app:layout_constraintTop_toBottomOf="@+id/administrarSQ" />
 </androidx.constraintlayout.widget.ConstraintLayout>

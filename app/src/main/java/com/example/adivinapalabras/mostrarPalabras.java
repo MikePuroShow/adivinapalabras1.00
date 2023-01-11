@@ -1,6 +1,5 @@
 package com.example.adivinapalabras;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -61,16 +60,22 @@ public class mostrarPalabras extends AppCompatActivity implements Serializable {
                 String value = String.valueOf(palabrasMostradas.get(position).getNombrePalabra());
                 // Toast.makeText(mostrarPalabras.this, palabrasMostradas.get(position).getDescripcion().toString(), Toast.LENGTH_SHORT).show();
                 // Toast.makeText(mostrarPalabras.this, descripcionPalabras[position].toString(), Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
+                Intent i = new Intent(getApplicationContext(), SQLvsMongoDB.class);
                 i.putExtra("partida", p);
-                i.putExtra("booleano",false);
+                i.putExtra("booleano",false); //FALSO SI LA ES UNA PALABRA
                 i.putExtra("posicion", position);
                 startActivity(i);
             }
         });
     }
     public void AdministrarSQ(View vista){
-        Intent i = new Intent(getApplicationContext(), FormularioPalabras.class);
+        Intent i = new Intent(getApplicationContext(), FormularioPalabrasSQL.class);
+        i.putExtra("partida", p);
+        i.putExtra("booleano",true); //TRUE SI ESTA VACIO.
+        startActivity(i);
+    }
+    public void AdministrarMongoDB(View vista){
+        Intent i = new Intent(getApplicationContext(), FormularioPalabrasMongoDB.class);
         i.putExtra("partida", p);
         i.putExtra("booleano",true);
         startActivity(i);

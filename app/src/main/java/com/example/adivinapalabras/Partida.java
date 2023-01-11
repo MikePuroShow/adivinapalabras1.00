@@ -26,7 +26,31 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.bson.Document;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class Partida extends AppCompatActivity implements Serializable {
 
@@ -45,10 +69,8 @@ public class Partida extends AppCompatActivity implements Serializable {
         //cargarPalabras();
         //inicio primera partida
         elegirPalabraPartida();
+
     }
-
-
-
 
 
     /**
@@ -57,15 +79,15 @@ public class Partida extends AppCompatActivity implements Serializable {
      * Normal: 1/3 de las letras
      * Dificil: 1/3 de las letras -1
      */
-    public void descubrirLetras(){
-        int cantidadLetras = (palabraActual.length/2);
+    public void descubrirLetras() {
+        int cantidadLetras = (palabraActual.length / 2);
         int i = 0;
-        while(i<cantidadLetras){
+        while (i < cantidadLetras) {
             Random aleatorio = new Random();
             int numAleatorio = aleatorio.nextInt(palabraActual.length);
             //System.out.println(aleatorio);
-            if(!posicionesAcertadas[numAleatorio]){
-                posicionesAcertadas[numAleatorio]=true;
+            if (!posicionesAcertadas[numAleatorio]) {
+                posicionesAcertadas[numAleatorio] = true;
                 i++;
             }
         }
@@ -163,15 +185,18 @@ public class Partida extends AppCompatActivity implements Serializable {
         }
         return ganado;
     }
-    public void palabrasNuevasFicheroTXT(){
-       palabrasNuevas = (ArrayList<Palabra>) palabras.clone();
-        palabrasNuevas.add(new Palabra("mascarilla","es un dispositivo diseñado para proteger, al portador, de la inhalación de sustancias peligrosas"));
-        palabrasNuevas.add(new Palabra("cojin","es una especie de almohada cuadrada y ornamentada rellena con lana"));
-        palabrasNuevas.add(new Palabra("gorra","es un accesorio diseñado y creado para cubrir la cabeza y proteger los ojos de la luz natural"));
-        palabrasNuevas.add(new Palabra("patinete"," es un vehículo/juguete que consiste en una plataforma alargada sobre dos ruedas en línea y una barra de dirección"));
+
+    public void palabrasNuevasFicheroTXT() {
+        palabrasNuevas = (ArrayList<Palabra>) palabras.clone();
+        palabrasNuevas.add(new Palabra("mascarilla", "es un dispositivo diseñado para proteger, al portador, de la inhalación de sustancias peligrosas"));
+        palabrasNuevas.add(new Palabra("cojin", "es una especie de almohada cuadrada y ornamentada rellena con lana"));
+        palabrasNuevas.add(new Palabra("gorra", "es un accesorio diseñado y creado para cubrir la cabeza y proteger los ojos de la luz natural"));
+        palabrasNuevas.add(new Palabra("patinete", " es un vehículo/juguete que consiste en una plataforma alargada sobre dos ruedas en línea y una barra de dirección"));
     }
+
     /**
      * Metodo para guardar las palabras de la partida en un fichero de texto
+     *
      * @param contexto contexto de main activity
      */
     public void guardarPalabrasTXT(Context contexto) {
@@ -180,7 +205,7 @@ public class Partida extends AppCompatActivity implements Serializable {
         try (FileOutputStream fos = contexto.openFileOutput(nombreArchivo, Context.MODE_PRIVATE)) {
             FileWriter fw = new FileWriter(fos.getFD());
             for (int i = 0; i < palabrasNuevas.size(); i++) {
-            //    fw.write(palabras.get(i).getNombrePalabra() + "," + palabras.get(i).getDescripcion() + "\n");
+                //    fw.write(palabras.get(i).getNombrePalabra() + "," + palabras.get(i).getDescripcion() + "\n");
                 fw.write(palabrasNuevas.get(i).getNombrePalabra() + "," + palabrasNuevas.get(i).getDescripcion() + "\n");
             }
             fw.close();
@@ -189,7 +214,8 @@ public class Partida extends AppCompatActivity implements Serializable {
         } catch (IOException e) {
         }
     }
-    public void importarPalabrasSQL(Context context){
+
+    public void importarPalabrasSQL(Context context) {
         baseDatosHelper mdHelper = new baseDatosHelper(context);
         SQLiteDatabase db = mdHelper.getReadableDatabase();
         //db.rawQuery("select * from " + LawyerEntry.TABLE_NAME, null); //TODO consulta optativa
@@ -202,21 +228,20 @@ public class Partida extends AppCompatActivity implements Serializable {
                 null,                   // don't filter by row groups
                 null              // The sort order
         );
-      // palabras.clear();
-            while (cursor.moveToNext()){
-                    String nombrePal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Nombre_Palabra));
-                    String descripPal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Descripcion_Palabra));
-                 palabras.add(new Palabra(nombrePal,descripPal));
-            }
-            if(palabras.size()==0){
-                Toast.makeText(this,"No se han importado palabra ya que la BD esta vacia",Toast.LENGTH_LONG).show();
-            }
-            cursor.close();
+        // palabras.clear();
+        while (cursor.moveToNext()) {
+            String nombrePal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Nombre_Palabra));
+            String descripPal = cursor.getString(cursor.getColumnIndexOrThrow(estructuraBaseDeDatos.Descripcion_Palabra));
+            palabras.add(new Palabra(nombrePal, descripPal));
+        }
+        if (palabras.size() == 0) {
+            Toast.makeText(this, "No se han importado palabra ya que la BD esta vacia", Toast.LENGTH_LONG).show();
+        }
+        cursor.close();
     }
 
     /**
      * Metodo para cargar las palabras de la partida desde un fichero de texto
-     *
      */
     public void cargarPalabrasTXT(Context contexto) {
         String nombreArchivo = "palabras.txt";
@@ -230,19 +255,19 @@ public class Partida extends AppCompatActivity implements Serializable {
             InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             palabras.clear();
-                String line = reader.readLine();
-                while (line != null) {
-                    String[] palabrasRecibidas = line.split(",");
-                    palabras.add(new Palabra(palabrasRecibidas[0], palabrasRecibidas[1]));
-                    line = reader.readLine();
-                }
-                fis.close();
-                Toast.makeText(contexto, "Palabras cargadas del fichero de texto", Toast.LENGTH_SHORT).show();
+            String line = reader.readLine();
+            while (line != null) {
+                String[] palabrasRecibidas = line.split(",");
+                palabras.add(new Palabra(palabrasRecibidas[0], palabrasRecibidas[1]));
+                line = reader.readLine();
+            }
+            fis.close();
+            Toast.makeText(contexto, "Palabras cargadas del fichero de texto", Toast.LENGTH_SHORT).show();
 
 
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             Toast.makeText(contexto, "No existe ningun fichero", Toast.LENGTH_SHORT).show();
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -287,11 +312,16 @@ public class Partida extends AppCompatActivity implements Serializable {
 
 
     public void exportarPalabrasSQL(Context context) {
+        palabrasNuevas = new ArrayList<Palabra>();
+        palabrasNuevas.add(new Palabra("mascarilla", "es un dispositivo diseñado para proteger, al portador, de la inhalación de sustancias peligrosas"));
+        palabrasNuevas.add(new Palabra("cojin", "es una especie de almohada cuadrada y ornamentada rellena con lana"));
+        palabrasNuevas.add(new Palabra("gorra", "es un accesorio diseñado y creado para cubrir la cabeza y proteger los ojos de la luz natural"));
+        palabrasNuevas.add(new Palabra("patinete", " es un vehículo/juguete que consiste en una plataforma alargada sobre dos ruedas en línea y una barra de dirección"));
 
         baseDatosHelper mdHelper = new baseDatosHelper(context);
         SQLiteDatabase db = mdHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
-        for(Palabra pa: palabras){
+        for (Palabra pa : palabrasNuevas) {
             values.put(estructuraBaseDeDatos.Nombre_Palabra, pa.getNombrePalabra());
             values.put(estructuraBaseDeDatos.Descripcion_Palabra, pa.getDescripcion());
             long newRowId = db.insert(estructuraBaseDeDatos.TABLE_NAME, null, values);
@@ -299,12 +329,12 @@ public class Partida extends AppCompatActivity implements Serializable {
     }
 
     public void exportarObjetos(Context contexto) {
-        FileOutputStream fos=null;
+        FileOutputStream fos = null;
         try {
             palabrasNuevasFicheroTXT();
-            fos = contexto.openFileOutput("palabras1.dat",Context.MODE_PRIVATE | Context.MODE_APPEND);
+            fos = contexto.openFileOutput("palabras1.dat", Context.MODE_PRIVATE | Context.MODE_APPEND);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            for (Palabra p: this.palabras){
+            for (Palabra p : this.palabras) {
                 oos.writeObject(p);
             }
             oos.close();
@@ -319,14 +349,13 @@ public class Partida extends AppCompatActivity implements Serializable {
             fis = contexto.openFileInput("palabras1.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
             Palabra aux = (Palabra) ois.readObject();
-            if(aux==null){
-                Toast.makeText(this,"No hay palabras en el fichero de OBJETOS",Toast.LENGTH_LONG).show();
+            if (aux == null) {
+                Toast.makeText(this, "No hay palabras en el fichero de OBJETOS", Toast.LENGTH_LONG).show();
             }
-            while (aux!=null)
-            {
-                if (aux instanceof Palabra){
+            while (aux != null) {
+                if (aux instanceof Palabra) {
                     palabras.add((Palabra) aux);
-                    aux =(Palabra) ois.readObject();
+                    aux = (Palabra) ois.readObject();
                 }
             }
             ois.close();
@@ -336,7 +365,76 @@ public class Partida extends AppCompatActivity implements Serializable {
             e.printStackTrace();
         }
     }
-    public void exportarXML(Context context){
+
+    public void exportarXML(Context context) {
 
     }
+
+    public void importarMongo(MainActivity mainActivity) {
+
+
+        // mongod --port 27017 --dbpath C:\MongoDB\data\db --bind_ip_all
+
+        class GetMONGO extends AsyncTask<Void, Void, String> {
+            //this method will be called before execution
+            //you can display a progress bar or something
+            //so that user can understand that he should wait
+            //as network operation may take some time
+            //Document doc;
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            //this method will be called after execution
+
+            //so here we are displaying a toast with the json string
+            @Override
+            protected void onPostExecute(String jsonStr) {
+                super.onPostExecute(jsonStr);
+            }
+
+            //in this method we are fetching the json string
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    String uri = "mongodb://172.20.10.2:27017/";
+                    MongoClient mongoClient = MongoClients.create(uri);
+                    MongoDatabase database = mongoClient.getDatabase("palabras");
+                    MongoCollection<Document> collection = database.getCollection("palabras1");
+
+                    collection.find().forEach(doc -> {
+                        String nombre = "";
+                        String descripcion = "";
+                        JSONObject jsonObject = new JSONObject(doc);
+
+                        try {
+                            nombre = jsonObject.getString("nombre");
+                            descripcion = jsonObject.getString("descripcion");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        palabras.add(new Palabra(nombre, descripcion));
+                        System.out.println(nombre);
+
+                    });
+
+                    return uri;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    e.getMessage();
+                    return null;
+                }
+
+            }
+        }
+
+        //creating asynctask object and executing it
+        GetMONGO getMongo = new GetMONGO();
+        getMongo.execute();
+    }
+
+
 }
+
+

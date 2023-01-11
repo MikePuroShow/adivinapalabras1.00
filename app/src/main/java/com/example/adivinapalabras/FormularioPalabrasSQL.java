@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.Serializable;
 
-public class FormularioPalabras extends AppCompatActivity implements Serializable {
+public class FormularioPalabrasSQL extends AppCompatActivity implements Serializable {
     EditText nombre;
     EditText descripcion;
     Partida p;
@@ -26,9 +26,9 @@ public class FormularioPalabras extends AppCompatActivity implements Serializabl
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.formulario);
-        nombre = findViewById(R.id.nombrePalabra);
-        descripcion = findViewById(R.id.descripcionText);
+        setContentView(R.layout.sqliteformu);
+        nombre = findViewById(R.id.nombrePalabraMYSQL);
+        descripcion = findViewById(R.id.descripcionmysql);
         /**RECOGER PARITDA DE LA OTRA ACTIVIDAD**/
         Bundle datos = getIntent().getExtras(); //BUNDLE
             p = (Partida) datos.getSerializable("partida"); //RECOGER PARTIDA
@@ -182,7 +182,7 @@ public class FormularioPalabras extends AppCompatActivity implements Serializabl
        // El valor que se muestra del método delete () indica el número de filas que se borraron de la
         //base de datos.
     }
-    public void resetearSQlite(View vista){
+    public void resetearSQlite(View vista){ // METODO QUE SI PONES UN NOMBRE IGUAL QE EN LA BD T CAMBIA LA DESCRIPCIÓN.
         SQLiteDatabase db = mdHelper.getWritableDatabase();
 // New value for one column
         ContentValues values = new ContentValues();

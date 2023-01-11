@@ -2,15 +2,18 @@ package com.example.adivinapalabras;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,8 +21,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Serializable {
@@ -36,13 +48,13 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private char[] palabra;
     private boolean primeraEjecucion;
     private ArrayList<Palabra> palabrasInicio;
-
+    private int intentosDisponiblesEmpezar;
+    private ListView listViewMYSQL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //inicializacion vistas
         palabraSeleccionada = findViewById(R.id.palabra);
         intentosRestantes = findViewById(R.id.intentos);
@@ -56,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         Intent i = getIntent();
         partida = (Partida) i.getSerializableExtra("partida");
         if (partida == null) {
+
             cargaInicial(); //Se le añaden descripciones y palabras al array del MAIN ACTIVITY
             //se crea la partida
             partida = new Partida(palabrasInicio);
@@ -66,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             mostrarPalabra(); //se muestran guiones y algunas letras
             mostrarDescripcion(); //descripcion
             calcularIntentos(partida.getIntentos()); //intentos.
+            intentosDisponiblesEmpezar = partida.getIntentos();//INTENTOS INICIALES
         } else {
             try {
                 actualizarPalabras();
@@ -129,6 +143,22 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             case R.id.menuSalirAplicacion:
                 System.exit(0);
                 return true;
+            case R.id.importarmongo:
+                partida.importarMongo(this);
+                try {
+                    Thread.sleep(1000); //SLEEP porque lo jace tan rapido que no
+                                                //le da tiempo a actualizar el numero palabras
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                actualizarPalabras();
+                Toast.makeText(this, "Palabras  importadas desde MONGODB", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.importarMYSQL:
+                getJSON("http://192.168.56.1/php/leerpalabras.php");
+                return true;
+            case R.id.exportarAmySQL:
+                exportarPalabrasMYSQLusandoPHP("http://192.168.56.1/php/insertarpalabras.php");
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -179,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         } else {
             if (partida.comprobarPartida()) {
                 botonResolver.setEnabled(false);//deshabilita el boton al perder
-                mostrarDialogo("Has ganado");
+                mostrarDialogo("Has ganado,realizando: " +(intentosDisponiblesEmpezar-partida.getIntentos())+" fallos");
             }
         }
     }
@@ -296,6 +326,102 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         for (int i = 0; i < nombrePalabras.length; i++) {
             palabrasInicio.add(new Palabra(nombrePalabras[i], descripcion[i]));
         }
+    }
+
+
+
+    private void getJSON(final String urlWebService) {
+
+        class GetJSON extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                try {
+                    loadIntoListView(s);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    URL url = new URL(urlWebService);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String json;
+                    while ((json = bufferedReader.readLine()) != null) {
+                        sb.append(json + "\n");
+                    }
+                    con.disconnect();
+                    return sb.toString().trim();
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        GetJSON getJSON = new GetJSON();
+        getJSON.execute();
+    }
+
+    private void loadIntoListView(String json) throws JSONException {
+        JSONArray jsonArray = new JSONArray(json);
+        String[] palabras = new String[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            partida.getPalabras().add(new Palabra(obj.getString("palabra"), obj.getString("definicion")));
+        }
+        actualizarPalabras();
+        //   ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, heroes);
+        //  listView.setAdapter(arrayAdapter);
+    }
+    private void exportarPalabrasMYSQLusandoPHP(final String urlWebService) {
+
+        class exportarAnonima extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    URL url = new URL(urlWebService);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    ArrayList<Palabra> palabrasPHP = new ArrayList<Palabra>();
+                    palabrasPHP= partida.getPalabras();
+                    for (int i = 0; i < palabrasPHP.size(); i++) {
+                        url = new URL("http://192.168.56.1/php/insertarpalabras.php?palabra="+palabrasPHP.get(i).getNombrePalabra().trim()+"&definicion="+palabrasPHP.get(i).getDescripcion().trim());
+                        con = (HttpURLConnection) url.openConnection();
+                        con.getInputStream();
+                    }
+                    con.disconnect();
+                    return "Exportación realizada con éxito";
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        exportarAnonima ex = new exportarAnonima();
+        ex.execute();
     }
 
 }
