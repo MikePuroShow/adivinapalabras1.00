@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A2C7E4">
+
+    <EditText
+        android:id="@+id/nombrePalabraMYSQL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="52dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/descripcionmysql"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="47dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nombrePalabraMYSQL" />
+
+    <TextView
+        android:id="@+id/labelMYSQL"
+        android:layout_width="115dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="159dp"
+        android:layout_marginTop="66dp"
+        android:text="MONGODB"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descripcionmysql" />
+
+    <Button
+        android:id="@+id/btnInsertarMYSQL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="155dp"
+        android:onClick="GestionMongoDB"
+        android:text="+"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descripcionmysql" />
+
+    <Button
+        android:id="@+id/btnEliminarMYSQL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="60dp"
+        android:onClick="GestionMongoDB"
+        android:text="-"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnInsertarMYSQL" />
+
+    <Button
+        android:id="@+id/btnResetearMYSQL"
+        android:layout_width="88dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="158dp"
+        android:layout_marginTop="155dp"
+        android:onClick="GestionMongoDB"
+        android:text="R"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/btnInsertarMYSQL"
+        app:layout_constraintTop_toBottomOf="@+id/descripcionmysql" />
+
+    <Button
+        android:id="@+id/btnBuscarMYSQL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="158dp"
+        android:layout_marginTop="54dp"
+        android:onClick="GestionMongoDB"
+        android:text="B"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/btnEliminarMYSQL"
+        app:layout_constraintTop_toBottomOf="@+id/btnResetearMYSQL" />
+
+    <Button
+        android:id="@+id/volverATRAS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="284dp"
+        android:text="VOLVER"
+        app:layout_constraintTop_toBottomOf="@+id/labelMYSQL"
+        tools:layout_editor_absoluteX="176dp" />
+
+    <TextView
+        android:id="@+id/labelNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="Nombre:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/labelDescripcion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="82dp"
+        android:text="Descripción:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelNombre" />
+</androidx.constraintlayout.widget.ConstraintLayout>
